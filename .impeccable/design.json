@@ -1,0 +1,877 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-28T04:07:59+00:00",
+  "title": "Design System: 云工作室",
+  "extensions": {
+    "colorMeta": {
+      "frame": {
+        "role": "neutral",
+        "displayName": "石灰外框 Lime Plaster",
+        "canonical": "#f2f2f0",
+        "tonalRamp": [
+          "#0b0b0a",
+          "#252524",
+          "#424241",
+          "#616160",
+          "#828281",
+          "#a5a5a3",
+          "#c9c9c8",
+          "#eeeeed"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "纸白 Sheet White",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "raised": {
+        "role": "neutral",
+        "displayName": "浅井 Raised Well",
+        "canonical": "#f6f6f5",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252524",
+          "#424241",
+          "#616160",
+          "#828281",
+          "#a5a5a4",
+          "#c9c9c8",
+          "#eeeeee"
+        ]
+      },
+      "active": {
+        "role": "neutral",
+        "displayName": "按压灰 Active Stone",
+        "canonical": "#e8e8e6",
+        "tonalRamp": [
+          "#0b0b0a",
+          "#252524",
+          "#424241",
+          "#616160",
+          "#828281",
+          "#a5a5a3",
+          "#c9c9c8",
+          "#eeeeed"
+        ]
+      },
+      "frame-hover": {
+        "role": "neutral",
+        "displayName": "外框悬停 Frame Hover",
+        "canonical": "#e9e9e7",
+        "tonalRamp": [
+          "#0b0b0a",
+          "#252524",
+          "#424241",
+          "#616160",
+          "#828281",
+          "#a5a5a3",
+          "#c9c9c8",
+          "#eeeeed"
+        ]
+      },
+      "border": {
+        "role": "neutral",
+        "displayName": "纸边 Sheet Edge",
+        "canonical": "#e8eaec",
+        "tonalRamp": [
+          "#0a0b0c",
+          "#242526",
+          "#414243",
+          "#606163",
+          "#818284",
+          "#a4a5a7",
+          "#c8c9cb",
+          "#edeef0"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "细分隔 Hairline Rule",
+        "canonical": "#f0f1f2",
+        "tonalRamp": [
+          "#0b0b0c",
+          "#252526",
+          "#414243",
+          "#606162",
+          "#818283",
+          "#a4a5a6",
+          "#c8c9ca",
+          "#eeeeef"
+        ]
+      },
+      "control": {
+        "role": "neutral",
+        "displayName": "控件描边 Control Line",
+        "canonical": "#cdced1",
+        "tonalRamp": [
+          "#0b0b0c",
+          "#242527",
+          "#414244",
+          "#606164",
+          "#818285",
+          "#a4a5a7",
+          "#c8c9cb",
+          "#eeeef0"
+        ]
+      },
+      "dashed": {
+        "role": "neutral",
+        "displayName": "虚线灰 Dashed Slot",
+        "canonical": "#d9dadc",
+        "tonalRamp": [
+          "#0b0b0c",
+          "#242526",
+          "#414243",
+          "#606163",
+          "#818284",
+          "#a4a5a7",
+          "#c8c9ca",
+          "#eeeef0"
+        ]
+      },
+      "text": {
+        "role": "neutral",
+        "displayName": "墨 Ink",
+        "canonical": "#131416",
+        "tonalRamp": [
+          "#0b0b0c",
+          "#242527",
+          "#414244",
+          "#606164",
+          "#818285",
+          "#a4a5a7",
+          "#c8c9cb",
+          "#edeef0"
+        ]
+      },
+      "chrome-ink": {
+        "role": "neutral",
+        "displayName": "外框墨 Chrome Ink",
+        "canonical": "#45474a",
+        "tonalRamp": [
+          "#0a0b0d",
+          "#242527",
+          "#404245",
+          "#5f6164",
+          "#808286",
+          "#a3a5a8",
+          "#c7c9cc",
+          "#edeef1"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "次要灰 Muted",
+        "canonical": "#5d5f60",
+        "tonalRamp": [
+          "#0a0b0c",
+          "#242526",
+          "#414243",
+          "#606162",
+          "#818384",
+          "#a3a5a6",
+          "#c8c9ca",
+          "#edefef"
+        ]
+      },
+      "faint": {
+        "role": "neutral",
+        "displayName": "最淡灰 Faint",
+        "canonical": "#6b6b6b",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "primary": {
+        "role": "secondary",
+        "displayName": "近黑 Studio Black",
+        "canonical": "#1d1f20",
+        "tonalRamp": [
+          "#0a0b0c",
+          "#242526",
+          "#404243",
+          "#5f6263",
+          "#808384",
+          "#a3a5a6",
+          "#c7c9ca",
+          "#edeff0"
+        ]
+      },
+      "primary-hover": {
+        "role": "secondary",
+        "displayName": "近黑悬停 Studio Black Hover",
+        "canonical": "#393c3e",
+        "tonalRamp": [
+          "#0a0b0c",
+          "#232527",
+          "#404244",
+          "#5f6264",
+          "#808385",
+          "#a2a5a7",
+          "#c7c9cb",
+          "#eceff0"
+        ]
+      },
+      "accent": {
+        "role": "primary",
+        "displayName": "铜绿 Verdigris",
+        "canonical": "#1b6c80",
+        "tonalRamp": [
+          "#000f19",
+          "#002b38",
+          "#014a5a",
+          "#226b7e",
+          "#488da1",
+          "#73b0c2",
+          "#9ed3e3",
+          "#c9f8ff"
+        ]
+      },
+      "accent-soft": {
+        "role": "primary",
+        "displayName": "浅铜绿 Verdigris Wash",
+        "canonical": "#e6f0f2",
+        "tonalRamp": [
+          "#080c0d",
+          "#212627",
+          "#3d4345",
+          "#5b6365",
+          "#7c8486",
+          "#9fa7a8",
+          "#c3cbcc",
+          "#e9f0f1"
+        ]
+      },
+      "accent-ink": {
+        "role": "primary",
+        "displayName": "深铜绿 Verdigris Ink",
+        "canonical": "#0f4553",
+        "tonalRamp": [
+          "#000e16",
+          "#052a33",
+          "#1f4854",
+          "#3a6977",
+          "#5b8b99",
+          "#82adba",
+          "#abd0dd",
+          "#d4f5ff"
+        ]
+      },
+      "positive": {
+        "role": "status",
+        "displayName": "正向绿 Positive",
+        "canonical": "#1e7b4f",
+        "tonalRamp": [
+          "#001301",
+          "#003014",
+          "#00502e",
+          "#1c7349",
+          "#44956a",
+          "#71b78e",
+          "#9cdab5",
+          "#c8fedc"
+        ]
+      },
+      "negative": {
+        "role": "status",
+        "displayName": "负向红 Negative",
+        "canonical": "#c4242a",
+        "tonalRamp": [
+          "#2e0000",
+          "#580000",
+          "#840008",
+          "#b21b23",
+          "#db4845",
+          "#fb766e",
+          "#ffa298",
+          "#ffcec4"
+        ]
+      },
+      "negative-line": {
+        "role": "status",
+        "displayName": "不像 Unlike Blush",
+        "canonical": "#e9b7b7",
+        "tonalRamp": [
+          "#180506",
+          "#371c1d",
+          "#593738",
+          "#7e5555",
+          "#a17576",
+          "#c29999",
+          "#e4bfbe",
+          "#ffe5e5"
+        ]
+      },
+      "quota-track": {
+        "role": "neutral",
+        "displayName": "额度轨道 Quota Track",
+        "canonical": "#e3e1da",
+        "tonalRamp": [
+          "#0c0b08",
+          "#262521",
+          "#43423d",
+          "#63615b",
+          "#84827c",
+          "#a7a59f",
+          "#cac9c4",
+          "#f0eeea"
+        ]
+      },
+      "quota-low": {
+        "role": "tertiary",
+        "displayName": "琥珀 Low-Quota Amber",
+        "canonical": "#a86f0c",
+        "tonalRamp": [
+          "#1d0200",
+          "#3e1a00",
+          "#623600",
+          "#885400",
+          "#ac7623",
+          "#cd9a58",
+          "#eec086",
+          "#ffe7b5"
+        ]
+      },
+      "pill-positive-bg": {
+        "role": "status",
+        "displayName": "正向胶囊底",
+        "canonical": "#dcfae5",
+        "tonalRamp": [
+          "#030e06",
+          "#182a1e",
+          "#33483a",
+          "#4f6857",
+          "#708a78",
+          "#94ac9b",
+          "#bad0c0",
+          "#e1f4e7"
+        ]
+      },
+      "pill-positive-ink": {
+        "role": "status",
+        "displayName": "正向胶囊字",
+        "canonical": "#04250e",
+        "tonalRamp": [
+          "#010f04",
+          "#152b1a",
+          "#2f4934",
+          "#4b6a51",
+          "#6b8c71",
+          "#90ae95",
+          "#b6d2bb",
+          "#def6e2"
+        ]
+      },
+      "pill-negative-bg": {
+        "role": "status",
+        "displayName": "负向胶囊底",
+        "canonical": "#ffedea",
+        "tonalRamp": [
+          "#100908",
+          "#2c2221",
+          "#4b3f3d",
+          "#6c5d5b",
+          "#8d7e7c",
+          "#afa19f",
+          "#d3c6c4",
+          "#f7ebea"
+        ]
+      },
+      "pill-negative-ink": {
+        "role": "status",
+        "displayName": "负向胶囊字",
+        "canonical": "#831c1e",
+        "tonalRamp": [
+          "#260000",
+          "#4b0307",
+          "#742020",
+          "#9e3d39",
+          "#c55f59",
+          "#e5877f",
+          "#ffafa7",
+          "#ffd8d1"
+        ]
+      },
+      "pill-warning-bg": {
+        "role": "status",
+        "displayName": "警告胶囊底",
+        "canonical": "#fffbeb",
+        "tonalRamp": [
+          "#0d0b05",
+          "#27251c",
+          "#454237",
+          "#656154",
+          "#868275",
+          "#a8a599",
+          "#ccc9be",
+          "#f1efe4"
+        ]
+      },
+      "pill-warning-ink": {
+        "role": "status",
+        "displayName": "警告胶囊字",
+        "canonical": "#92400e",
+        "tonalRamp": [
+          "#230000",
+          "#470f00",
+          "#6d2b01",
+          "#96481d",
+          "#bb6a41",
+          "#dc906b",
+          "#fcb796",
+          "#ffdfc2"
+        ]
+      },
+      "pill-warning-line": {
+        "role": "status",
+        "displayName": "警告提示条边",
+        "canonical": "#fde68a",
+        "tonalRamp": [
+          "#150900",
+          "#322300",
+          "#524000",
+          "#746000",
+          "#968128",
+          "#b7a55b",
+          "#dac989",
+          "#fdefb7"
+        ]
+      },
+      "pill-neutral-bg": {
+        "role": "status",
+        "displayName": "中性胶囊底",
+        "canonical": "#ebedee",
+        "tonalRamp": [
+          "#0a0b0c",
+          "#242526",
+          "#414243",
+          "#606162",
+          "#818383",
+          "#a4a5a6",
+          "#c8c9ca",
+          "#edefef"
+        ]
+      },
+      "pill-neutral-ink": {
+        "role": "status",
+        "displayName": "中性胶囊字",
+        "canonical": "#353736",
+        "tonalRamp": [
+          "#0a0b0b",
+          "#242525",
+          "#414242",
+          "#606261",
+          "#818382",
+          "#a3a5a4",
+          "#c8c9c9",
+          "#edefee"
+        ]
+      },
+      "bead-pearl": {
+        "role": "drawing",
+        "displayName": "珍珠 Pearl",
+        "canonical": "#efece4",
+        "tonalRamp": [
+          "#0c0b08",
+          "#272521",
+          "#44423c",
+          "#63615b",
+          "#85827b",
+          "#a7a59e",
+          "#cbc9c3",
+          "#f0eee9"
+        ]
+      },
+      "bead-silver": {
+        "role": "drawing",
+        "displayName": "银珠 Silver",
+        "canonical": "#b9bec4",
+        "tonalRamp": [
+          "#090b0e",
+          "#222529",
+          "#3f4247",
+          "#5d6267",
+          "#7e8388",
+          "#a1a5aa",
+          "#c6c9ce",
+          "#ebeff3"
+        ]
+      },
+      "bead-jade": {
+        "role": "drawing",
+        "displayName": "玉 Jade",
+        "canonical": "#7fae8e",
+        "tonalRamp": [
+          "#001004",
+          "#0d2c1a",
+          "#274b34",
+          "#426c51",
+          "#638e71",
+          "#89b095",
+          "#b0d3bb",
+          "#d9f8e2"
+        ]
+      },
+      "bead-glass": {
+        "role": "drawing",
+        "displayName": "琉璃 Glaze",
+        "canonical": "#4f86a8",
+        "tonalRamp": [
+          "#000d1d",
+          "#00283e",
+          "#194761",
+          "#346786",
+          "#5589a9",
+          "#7dacca",
+          "#a6d0eb",
+          "#d0f4ff"
+        ]
+      },
+      "metal-line": {
+        "role": "drawing",
+        "displayName": "金属链线 Metal Line",
+        "canonical": "#a9aeb3",
+        "tonalRamp": [
+          "#090b0e",
+          "#232528",
+          "#3f4246",
+          "#5d6266",
+          "#7e8387",
+          "#a1a5aa",
+          "#c6cacd",
+          "#ebeff2"
+        ]
+      },
+      "draw-studio-bg": {
+        "role": "drawing",
+        "displayName": "三视图底 Studio Backdrop",
+        "canonical": "#f7f7f5",
+        "tonalRamp": [
+          "#0b0b0a",
+          "#252524",
+          "#424241",
+          "#616160",
+          "#828281",
+          "#a5a5a3",
+          "#c9c9c8",
+          "#eeeeed"
+        ]
+      },
+      "draw-portrait-bg": {
+        "role": "drawing",
+        "displayName": "模特肖像底 Portrait Backdrop",
+        "canonical": "#eeece7",
+        "tonalRamp": [
+          "#0c0b09",
+          "#262522",
+          "#43423e",
+          "#63615d",
+          "#84827e",
+          "#a6a5a1",
+          "#cac9c5",
+          "#f0eeeb"
+        ]
+      },
+      "draw-table": {
+        "role": "drawing",
+        "displayName": "实拍桌面 Worktable",
+        "canonical": "#d6c9b4",
+        "tonalRamp": [
+          "#100a03",
+          "#2b2418",
+          "#4a4132",
+          "#6a604e",
+          "#8c816e",
+          "#aea492",
+          "#d1c8b8",
+          "#f6ede0"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "title": {
+        "displayName": "Title",
+        "purpose": "纸面里每屏唯一的 h1。"
+      },
+      "step-title": {
+        "displayName": "Step Title",
+        "purpose": "上新 builder 每一步的题目。"
+      },
+      "section": {
+        "displayName": "Section",
+        "purpose": "区块标题、builder 顶栏作品名、「这一套」。"
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "正文、按钮、输入框。"
+      },
+      "body-strong": {
+        "displayName": "Body Strong",
+        "purpose": "字段名、选中分段、当前导航。"
+      },
+      "small": {
+        "displayName": "Small",
+        "purpose": "说明行、图注、提示条、像 / 不像按钮。"
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "表头、分组名、计数、状态胶囊、AI 角标；界面最小字号。"
+      },
+      "mono": {
+        "displayName": "Mono",
+        "purpose": "只用于尺寸数值（cm）。"
+      }
+    },
+    "shadows": [
+      {
+        "name": "agent-panel",
+        "value": "0 12px 40px rgba(0,0,0,.14)",
+        "purpose": "助手面板，唯一常驻浮层。"
+      },
+      {
+        "name": "popover",
+        "value": "0 8px 24px rgba(0,0,0,.12)",
+        "purpose": "弹出菜单与「哪里不像」弹层。"
+      },
+      {
+        "name": "dialog",
+        "value": "0 16px 48px rgba(0,0,0,.18)",
+        "purpose": "对话框。"
+      },
+      {
+        "name": "toast",
+        "value": "0 8px 24px rgba(0,0,0,.18)",
+        "purpose": "近黑提示条。"
+      },
+      {
+        "name": "drawer",
+        "value": "0 0 40px rgba(0,0,0,.18)",
+        "purpose": "平板与手机的侧栏抽屉，打开时出现。"
+      },
+      {
+        "name": "dialog-backdrop",
+        "value": "rgba(19,20,22,.32)",
+        "purpose": "对话框遮罩色。"
+      },
+      {
+        "name": "focus-ring",
+        "value": "0 0 0 2px #1b6c80 (outline 2px, offset 2px)",
+        "purpose": "全局 :focus-visible 外环。"
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease",
+        "value": "cubic-bezier(.16, 1, .3, 1)",
+        "purpose": "所有过渡的统一缓动。"
+      },
+      {
+        "name": "hover",
+        "value": "150ms",
+        "purpose": "悬停底色与描边变化。"
+      },
+      {
+        "name": "press",
+        "value": "100ms translateY(1px)",
+        "purpose": "按钮按下。"
+      },
+      {
+        "name": "drawer",
+        "value": "250ms",
+        "purpose": "侧栏抽屉滑入。"
+      },
+      {
+        "name": "quota",
+        "value": "400ms",
+        "purpose": "额度条宽度变化。"
+      },
+      {
+        "name": "reduced-motion",
+        "value": "none",
+        "purpose": "prefers-reduced-motion 时关闭所有过渡与动画。"
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "phone",
+        "value": "760px"
+      },
+      {
+        "name": "tablet",
+        "value": "1100px"
+      },
+      {
+        "name": "agent-push",
+        "value": "1280px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "近黑主按钮，每屏最多一个，如「拍一套 · 消耗 4 张」。",
+      "html": "<button class=\"ds-btn ds-btn-primary\">拍一套 · 消耗 4 张</button>",
+      "css": ":host{--frame:#f2f2f0;--surface:#ffffff;--raised:#f6f6f5;--active:#e8e8e6;--border:#e8eaec;--rule:#f0f1f2;--control:#cdced1;--text:#131416;--muted:#5d5f60;--faint:#6b6b6b;--primary:#1d1f20;--accent:#1b6c80;--accent-soft:#e6f0f2;--ease:cubic-bezier(.16,1,.3,1);font-family:\"IBM Plex Sans\",\"PingFang SC\",\"Noto Sans SC\",system-ui,sans-serif;font-size:14px;line-height:20px;color:#131416;} .ds-btn{height:32px;padding:0 14px;border-radius:6px;border:1px solid var(--control);background:var(--surface);display:inline-flex;align-items:center;gap:8px;font:inherit;color:var(--text);cursor:pointer;transition:background-color .15s var(--ease),border-color .15s var(--ease),transform .1s;} .ds-btn:active{transform:translateY(1px);} .ds-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;} .ds-btn-primary{background:var(--primary);border-color:var(--primary);color:#fff;} .ds-btn-primary:hover{background:#393c3e;}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "白底描边次按钮，如「切换场景」「打包下载」。",
+      "html": "<button class=\"ds-btn\">切换场景</button>",
+      "css": ":host{--frame:#f2f2f0;--surface:#ffffff;--raised:#f6f6f5;--active:#e8e8e6;--border:#e8eaec;--rule:#f0f1f2;--control:#cdced1;--text:#131416;--muted:#5d5f60;--faint:#6b6b6b;--primary:#1d1f20;--accent:#1b6c80;--accent-soft:#e6f0f2;--ease:cubic-bezier(.16,1,.3,1);font-family:\"IBM Plex Sans\",\"PingFang SC\",\"Noto Sans SC\",system-ui,sans-serif;font-size:14px;line-height:20px;color:#131416;} .ds-btn{height:32px;padding:0 14px;border-radius:6px;border:1px solid var(--control);background:var(--surface);display:inline-flex;align-items:center;gap:8px;font:inherit;color:var(--text);cursor:pointer;transition:background-color .15s var(--ease);} .ds-btn:hover{background:var(--raised);} .ds-btn:active{transform:translateY(1px);} .ds-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;} .ds-btn:disabled{background:var(--raised);border-color:var(--border);color:var(--faint);cursor:not-allowed;transform:none;}"
+    },
+    {
+      "name": "Segmented Control",
+      "kind": "custom",
+      "refersTo": "segmented",
+      "description": "构图、露脸、画幅等少量互斥选项。",
+      "html": "<div class=\"ds-seg\"><button aria-pressed=\"true\">局部特写</button><button aria-pressed=\"false\">半身</button><button aria-pressed=\"false\">全身</button></div>",
+      "css": ":host{--frame:#f2f2f0;--surface:#ffffff;--raised:#f6f6f5;--active:#e8e8e6;--border:#e8eaec;--rule:#f0f1f2;--control:#cdced1;--text:#131416;--muted:#5d5f60;--faint:#6b6b6b;--primary:#1d1f20;--accent:#1b6c80;--accent-soft:#e6f0f2;--ease:cubic-bezier(.16,1,.3,1);font-family:\"IBM Plex Sans\",\"PingFang SC\",\"Noto Sans SC\",system-ui,sans-serif;font-size:14px;line-height:20px;color:#131416;} .ds-seg{display:inline-flex;background:var(--raised);border-radius:6px;padding:2px;gap:2px;} .ds-seg button{height:28px;padding:0 12px;border:0;background:none;border-radius:4px;color:var(--muted);font:inherit;cursor:pointer;} .ds-seg button:hover{color:var(--text);} .ds-seg button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;} .ds-seg button[aria-pressed=\"true\"]{background:var(--surface);color:var(--text);font-weight:500;outline:1px solid var(--border);outline-offset:-1px;}"
+    },
+    {
+      "name": "Option Chip",
+      "kind": "chip",
+      "refersTo": "option-pill",
+      "description": "气质问答与「哪里不像」的点选胶囊，选中为近黑。",
+      "html": "<div class=\"ds-opts\"><button class=\"ds-opt\" aria-pressed=\"true\">清冷</button><button class=\"ds-opt\" aria-pressed=\"false\">温柔</button><button class=\"ds-opt\" aria-pressed=\"false\">复古</button></div>",
+      "css": ":host{--frame:#f2f2f0;--surface:#ffffff;--raised:#f6f6f5;--active:#e8e8e6;--border:#e8eaec;--rule:#f0f1f2;--control:#cdced1;--text:#131416;--muted:#5d5f60;--faint:#6b6b6b;--primary:#1d1f20;--accent:#1b6c80;--accent-soft:#e6f0f2;--ease:cubic-bezier(.16,1,.3,1);font-family:\"IBM Plex Sans\",\"PingFang SC\",\"Noto Sans SC\",system-ui,sans-serif;font-size:14px;line-height:20px;color:#131416;} .ds-opts{display:flex;gap:8px;flex-wrap:wrap;} .ds-opt{height:34px;padding:0 14px;border:1px solid var(--control);border-radius:999px;background:var(--surface);font:inherit;color:var(--text);cursor:pointer;transition:background-color .15s var(--ease);} .ds-opt:hover{background:var(--raised);} .ds-opt:focus-visible{outline:2px solid var(--accent);outline-offset:2px;} .ds-opt[aria-pressed=\"true\"]{background:var(--primary);border-color:var(--primary);color:#fff;}"
+    },
+    {
+      "name": "Status Pill",
+      "kind": "chip",
+      "refersTo": "status-pill",
+      "description": "不可点的状态标记，四组语义色加铜绿。",
+      "html": "<span class=\"ds-pill\">项链</span> <span class=\"ds-pill ds-accent\">已复用</span> <span class=\"ds-pill ds-warn\">额度偏低</span>",
+      "css": ":host{--frame:#f2f2f0;--surface:#ffffff;--raised:#f6f6f5;--active:#e8e8e6;--border:#e8eaec;--rule:#f0f1f2;--control:#cdced1;--text:#131416;--muted:#5d5f60;--faint:#6b6b6b;--primary:#1d1f20;--accent:#1b6c80;--accent-soft:#e6f0f2;--ease:cubic-bezier(.16,1,.3,1);font-family:\"IBM Plex Sans\",\"PingFang SC\",\"Noto Sans SC\",system-ui,sans-serif;font-size:14px;line-height:20px;color:#131416;} .ds-pill{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:999px;font-size:12px;background:#ebedee;color:#353736;} .ds-accent{background:var(--accent-soft);color:#0f4553;} .ds-warn{background:#fffbeb;color:#92400e;}"
+    },
+    {
+      "name": "Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "38px 输入框，单位压在右侧内。",
+      "html": "<label class=\"ds-field\"><span>链长</span><span class=\"ds-unit\"><input class=\"ds-input\" value=\"42\"><i>cm</i></span></label>",
+      "css": ":host{--frame:#f2f2f0;--surface:#ffffff;--raised:#f6f6f5;--active:#e8e8e6;--border:#e8eaec;--rule:#f0f1f2;--control:#cdced1;--text:#131416;--muted:#5d5f60;--faint:#6b6b6b;--primary:#1d1f20;--accent:#1b6c80;--accent-soft:#e6f0f2;--ease:cubic-bezier(.16,1,.3,1);font-family:\"IBM Plex Sans\",\"PingFang SC\",\"Noto Sans SC\",system-ui,sans-serif;font-size:14px;line-height:20px;color:#131416;} .ds-field{display:grid;gap:8px;width:200px;} .ds-field>span:first-child{font-weight:500;} .ds-unit{position:relative;display:block;} .ds-unit i{position:absolute;right:12px;top:10px;font-style:normal;color:var(--muted);font-size:12px;} .ds-input{box-sizing:border-box;height:38px;padding:0 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);width:100%;font:inherit;font-variant-numeric:tabular-nums;} .ds-input:focus{outline:2px solid var(--accent);outline-offset:-1px;}"
+    },
+    {
+      "name": "Sidebar Nav",
+      "kind": "nav",
+      "refersTo": "nav-item",
+      "description": "石灰外框上的侧栏导航与额度条。",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-item\" aria-current=\"page\">我的工作室<span>1</span></a><a class=\"ds-nav-item\">总资产</a><div class=\"ds-quota\"><div class=\"ds-qh\"><span>生成额度</span><span>7 / 200 张</span></div><div class=\"ds-bar\"><i style=\"width:3.5%\"></i></div></div></nav>",
+      "css": ":host{--frame:#f2f2f0;--surface:#ffffff;--raised:#f6f6f5;--active:#e8e8e6;--border:#e8eaec;--rule:#f0f1f2;--control:#cdced1;--text:#131416;--muted:#5d5f60;--faint:#6b6b6b;--primary:#1d1f20;--accent:#1b6c80;--accent-soft:#e6f0f2;--ease:cubic-bezier(.16,1,.3,1);font-family:\"IBM Plex Sans\",\"PingFang SC\",\"Noto Sans SC\",system-ui,sans-serif;font-size:14px;line-height:20px;color:#131416;} .ds-nav{background:var(--frame);padding:12px 10px 16px;width:228px;display:grid;gap:2px;} .ds-nav-item{display:flex;align-items:center;height:34px;padding:0 10px;border-radius:6px;color:#45474a;cursor:pointer;transition:background-color .15s var(--ease);} .ds-nav-item span{margin-left:auto;font-size:12px;color:var(--muted);} .ds-nav-item:hover{background:#e9e9e7;} .ds-nav-item[aria-current=\"page\"]{background:var(--active);color:var(--text);font-weight:500;} .ds-quota{margin-top:24px;padding:0 8px;display:grid;gap:6px;} .ds-qh{display:flex;justify-content:space-between;font-size:12px;font-variant-numeric:tabular-nums;} .ds-bar{height:6px;border-radius:3px;background:#e3e1da;overflow:hidden;} .ds-bar i{display:block;height:100%;background:var(--accent);border-radius:3px;}"
+    },
+    {
+      "name": "Framed Sheet",
+      "kind": "card",
+      "refersTo": "sheet",
+      "description": "外框里的白色纸面，16px 圆角、1px 边、无阴影；内含一张卡片和一块浅井。",
+      "html": "<div class=\"ds-frame\"><div class=\"ds-sheet\"><h1>我的工作室</h1><div class=\"ds-row\"><div class=\"ds-card\">工作室卡片</div><div class=\"ds-well\">拍摄面板</div></div></div></div>",
+      "css": ":host{--frame:#f2f2f0;--surface:#ffffff;--raised:#f6f6f5;--active:#e8e8e6;--border:#e8eaec;--rule:#f0f1f2;--control:#cdced1;--text:#131416;--muted:#5d5f60;--faint:#6b6b6b;--primary:#1d1f20;--accent:#1b6c80;--accent-soft:#e6f0f2;--ease:cubic-bezier(.16,1,.3,1);font-family:\"IBM Plex Sans\",\"PingFang SC\",\"Noto Sans SC\",system-ui,sans-serif;font-size:14px;line-height:20px;color:#131416;} .ds-frame{background:var(--frame);padding:8px 8px 8px 0;} .ds-sheet{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;} .ds-sheet h1{margin:0 0 16px;font-size:22px;line-height:28px;font-weight:600;} .ds-row{display:grid;grid-template-columns:1fr 1fr;gap:24px;} .ds-card{border:1px solid var(--border);border-radius:8px;padding:16px;} .ds-well{background:var(--raised);border-radius:8px;padding:16px;}"
+    },
+    {
+      "name": "Contact-sheet Frame",
+      "kind": "custom",
+      "refersTo": "verdict-like-selected",
+      "description": "成片卡：图、AI 角标、珠序对照、像 / 不像。",
+      "html": "<figure class=\"ds-shot\"><div class=\"ds-img\"><span class=\"ds-ai\">AI 生成</span></div><svg class=\"ds-cmp\" viewBox=\"0 0 120 36\"><text x=\"0\" y=\"13\" font-size=\"11\" fill=\"#5d5f60\">实拍</text><circle cx=\"36\" cy=\"9\" r=\"4.6\" fill=\"#efece4\" stroke=\"rgba(0,0,0,.28)\" stroke-width=\".7\"/><circle cx=\"47\" cy=\"9\" r=\"3.4\" fill=\"#b9bec4\" stroke=\"rgba(0,0,0,.28)\" stroke-width=\".7\"/><circle cx=\"58\" cy=\"9\" r=\"4.6\" fill=\"#7fae8e\" stroke=\"rgba(0,0,0,.28)\" stroke-width=\".7\"/><circle cx=\"70\" cy=\"9\" r=\"5\" fill=\"#4f86a8\" stroke=\"rgba(0,0,0,.32)\" stroke-width=\".7\"/><text x=\"0\" y=\"31\" font-size=\"11\" fill=\"#5d5f60\">本张</text><circle cx=\"36\" cy=\"27\" r=\"4.6\" fill=\"#efece4\" stroke=\"rgba(0,0,0,.28)\" stroke-width=\".7\"/><circle cx=\"47\" cy=\"27\" r=\"3.4\" fill=\"#b9bec4\" stroke=\"rgba(0,0,0,.28)\" stroke-width=\".7\"/><circle cx=\"58\" cy=\"27\" r=\"4.6\" fill=\"#7fae8e\" stroke=\"rgba(0,0,0,.28)\" stroke-width=\".7\"/><circle cx=\"70\" cy=\"27\" r=\"6.5\" fill=\"#4f86a8\" stroke=\"rgba(0,0,0,.32)\" stroke-width=\".7\"/><circle cx=\"70\" cy=\"27\" r=\"9.5\" fill=\"none\" stroke=\"#1b6c80\" stroke-width=\"1.6\"/></svg><figcaption><span class=\"ds-diff\">吊坠和实拍大小不一致</span></figcaption><div class=\"ds-cap\"><span>试戴 3</span><span class=\"ds-vd\"><button class=\"ds-v\" aria-pressed=\"true\">像</button><button class=\"ds-v\" aria-pressed=\"false\">不像</button></span></div></figure>",
+      "css": ":host{--frame:#f2f2f0;--surface:#ffffff;--raised:#f6f6f5;--active:#e8e8e6;--border:#e8eaec;--rule:#f0f1f2;--control:#cdced1;--text:#131416;--muted:#5d5f60;--faint:#6b6b6b;--primary:#1d1f20;--accent:#1b6c80;--accent-soft:#e6f0f2;--ease:cubic-bezier(.16,1,.3,1);font-family:\"IBM Plex Sans\",\"PingFang SC\",\"Noto Sans SC\",system-ui,sans-serif;font-size:14px;line-height:20px;color:#131416;} .ds-shot{margin:0;width:200px;display:grid;gap:8px;} .ds-img{position:relative;aspect-ratio:1;border-radius:6px;border:1px solid var(--border);background:#e8e4dc;} .ds-ai{position:absolute;right:6px;bottom:6px;font-size:12px;line-height:18px;padding:0 6px;border-radius:4px;background:rgba(19,20,22,.62);color:#fff;} .ds-cmp{width:100%;height:auto;display:block;} .ds-diff{color:#0f4553;font-weight:500;font-size:13px;} .ds-cap{display:flex;align-items:center;justify-content:space-between;font-size:13px;} .ds-vd{display:inline-flex;gap:4px;} .ds-v{height:28px;padding:0 12px;border:1px solid var(--control);border-radius:999px;background:var(--surface);font:inherit;font-size:13px;cursor:pointer;} .ds-v:hover{background:var(--raised);} .ds-v:focus-visible{outline:2px solid var(--accent);outline-offset:2px;} .ds-v[aria-pressed=\"true\"]:first-child{background:var(--accent);border-color:var(--accent);color:#fff;} .ds-v[aria-pressed=\"true\"]:last-child{background:#ffedea;border-color:#e9b7b7;color:#831c1e;}"
+    },
+    {
+      "name": "Assistant Panel",
+      "kind": "custom",
+      "refersTo": "agent-panel",
+      "description": "唯一常驻浮层，带阴影，浮在纸面右侧。",
+      "html": "<aside class=\"ds-agent\"><header>助手</header><div class=\"ds-log\"><p class=\"ds-msg\">这件作品适合复用「亚麻布·清冷」。</p><p class=\"ds-msg ds-u\">就用它拍一套</p></div></aside>",
+      "css": ":host{--frame:#f2f2f0;--surface:#ffffff;--raised:#f6f6f5;--active:#e8e8e6;--border:#e8eaec;--rule:#f0f1f2;--control:#cdced1;--text:#131416;--muted:#5d5f60;--faint:#6b6b6b;--primary:#1d1f20;--accent:#1b6c80;--accent-soft:#e6f0f2;--ease:cubic-bezier(.16,1,.3,1);font-family:\"IBM Plex Sans\",\"PingFang SC\",\"Noto Sans SC\",system-ui,sans-serif;font-size:14px;line-height:20px;color:#131416;} .ds-agent{width:320px;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,.14);overflow:hidden;} .ds-agent header{padding:10px 16px;border-bottom:1px solid var(--rule);font-weight:600;} .ds-log{padding:16px;display:grid;gap:10px;} .ds-msg{margin:0;max-width:92%;padding:10px 12px;border-radius:10px;background:var(--raised);} .ds-u{justify-self:end;background:var(--primary);color:#fff;}"
+    }
+  ],
+  "narrative": {
+    "northStar": "无缝背景纸的拍摄棚",
+    "overview": "整个应用是一间拍摄棚：低彩度石灰色外框是棚里的墙和工作台，白色纸面是挂下来的无缝背景纸，作品和成片放在纸上拍。外框（侧栏加 48px 顶栏）连成一整块 L 形，没有分隔线；纸面离窗口右边和下边各 8px，16px 圆角、1px 细边、不加阴影。深度只靠一个色阶（外框到纸面），不靠投影。\n\n界面退后，作品在前。每个屏幕上最大的东西是作品、工作室的场景和成片印样；控件贴在它们旁边，体量小，颜色是灰和近黑。品牌色铜绿（银、铜饰品氧化后的颜色）用得很省，只落在数据和\"选中\"上：额度条、\"像\"的计数、选中的饰品或模特、被判定为\"像\"的成片。\n\n密度中等，适合一次 20 到 40 分钟的连续操作：14px 正文，32px 控件，24px 的统一间距。图像全部用代码绘制，饰品按同一份珠序在实拍、三视图、成片三处复用，保真在屏幕上就能核对。",
+    "keyCharacteristics": [
+      "石灰 L 形外框 + 白色纸面，两层之间只有一个色阶，纸面无阴影。",
+      "主按钮近黑，品牌铜绿只给数据和选中态。",
+      "IBM Plex Sans 配系统中文黑体，Plex Mono 只用于尺寸数字（cm）。",
+      "每张成片下有珠序对照条，旁边是\"像 / 不像\"。",
+      "所有图形代码绘制：饰品 SVG、平涂色场场景、不画五官的模特局部特写。",
+      "阴影只属于浮层：助手面板、弹出菜单、对话框、提示条、手机抽屉。"
+    ],
+    "rules": [
+      {
+        "name": "The Verdigris-Is-Data Rule",
+        "body": "铜绿只用于数据和选中；任何按钮的常规填充、标题、图标都不用铜绿。主动作永远是近黑。",
+        "section": "colors"
+      },
+      {
+        "name": "The One Tone Step Rule",
+        "body": "外框和纸面之间只隔一个色阶（`frame` 到 `surface`）；纸面里的凹面板再降一阶到 `raised`。不加第四层。",
+        "section": "colors"
+      },
+      {
+        "name": "The Three Weights Rule",
+        "body": "只用 400、500、600。层级靠字号和 600，不靠 700 或加大字距。",
+        "section": "typography"
+      },
+      {
+        "name": "The Mono-Means-Measure Rule",
+        "body": "Plex Mono 只用于尺寸数值；ID、计数、额度用 Plex Sans 的 tabular-nums。",
+        "section": "typography"
+      },
+      {
+        "name": "The Work-Is-Largest Rule",
+        "body": "每屏最大的元素是作品、场景或成片；控件面板宽度固定（228 / 232 / 288 / 340px），图像区吃掉剩余宽度。",
+        "section": "layout"
+      },
+      {
+        "name": "The Single Gutter Rule",
+        "body": "并列的栅格共享 24px 间距；图像网格内部用 12 或 16px。不要在同一层级混用两种间距。",
+        "section": "layout"
+      },
+      {
+        "name": "The Shadow-Means-Floating Rule",
+        "body": "纸面、卡片、成片、面板永远无阴影；有阴影就说明它浮在纸面之上，并且可以关掉。",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** 把工作内容放在白色纸面上：16px 圆角、1px `border`、离窗口右和下 8px、无阴影；外框用 `frame`（#f2f2f0）。",
+      "**Do** 每屏只放一个近黑主按钮，其他用白底描边的次按钮或无框按钮。",
+      "**Do** 只在数据和选中态使用铜绿：额度、\"像\"的计数、选中的饰品与模特、\"像\"按下、焦点环、珠序偏差圈注。",
+      "**Do** 在每张 AI 成片下放珠序对照条和\"像 / 不像\"，并保留\"AI 生成\"角标。",
+      "**Do** 让饰品、场景、成片占据最大面积，控件面板用固定宽度。",
+      "**Do** 数字一律 tabular-nums，尺寸数值用 Plex Mono。",
+      "**Do** 在 ≤ 1100px 时去掉外框，让纸面成为屏幕，顶栏只留菜单、标题、一个动作。",
+      "**Do** 所有新图形沿用平面绘图语言：饰品出自同一份珠序数据，场景是平涂色场，模特是不画五官的局部特写。"
+    ],
+    "donts": [
+      "**Don't** 在侧栏和顶栏之间画分隔线，也不要给纸面、卡片、成片加阴影；阴影只给浮层。",
+      "**Don't** 用铜绿做按钮填充、标题色、图标色块或装饰背景。",
+      "**Don't** 使用渐变、emoji、带色底的图标块、小号全大写标签或 01 / 02 式编号。",
+      "**Don't** 在纸面里再套第四层容器：外框、纸面、卡片（或浅井）就是全部层级。",
+      "**Don't** 让卡片描边比纸面更重：卡片和纸面同用 `border`，`control` 只给可交互控件。",
+      "**Don't** 引用外部图片或用别人的饰品照片充当成片；也不在界面上写\"此图为示意\"。",
+      "**Don't** 给模特画五官，或改动饰品图形来\"美化\"成片：饰品图形只能出自珠序数据。",
+      "**Don't** 用 700 字重或小于 12px 的界面文字。"
+    ]
+  }
+}

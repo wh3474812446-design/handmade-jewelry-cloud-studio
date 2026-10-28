@@ -1,0 +1,1445 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>云工作室 · 原型</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --frame: #f2f2f0;
+  --surface: #ffffff;
+  --raised: #f6f6f5;
+  --active: #e8e8e6;
+  --border: #e8eaec;
+  --rule: #f0f1f2;
+  --control: #cdced1;
+  --text: #131416;
+  --muted: #5d5f60;
+  --faint: #6b6b6b;
+  --primary: #1d1f20;
+  --accent: #1b6c80;
+  --accent-soft: #e6f0f2;
+  --positive: #1e7b4f;
+  --negative: #c4242a;
+  --pill-positive-bg: #dcfae5; --pill-positive-ink: #04250e;
+  --pill-negative-bg: #ffedea; --pill-negative-ink: #831c1e;
+  --pill-warning-bg: #fffbeb; --pill-warning-ink: #92400e;
+  --pill-neutral-bg: #ebedee; --pill-neutral-ink: #353736;
+  --radius-card: 8px; --radius-control: 6px; --radius-sheet: 16px;
+  --sheet-inset: 8px; --sidebar: 228px; --topbar: 48px;
+  --gap: 24px; --pad: 24px; --control-h: 32px;
+  --fs-title: 22px; --fs-section: 16px; --fs-kpi: 28px; --fs-body: 14px; --fs-small: 12px;
+  --font: "IBM Plex Sans", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", monospace;
+  --ease: cubic-bezier(.16, 1, .3, 1);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  font-family: var(--font); font-size: var(--fs-body); line-height: 20px;
+  color: var(--text); background: var(--frame);
+  -webkit-font-smoothing: antialiased;
+}
+::selection { background: var(--accent-soft); color: var(--text); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+* { scrollbar-width: thin; scrollbar-color: var(--control) transparent; }
+h1, h2, h3, p { margin: 0; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+.num, .mono { font-variant-numeric: tabular-nums; }
+.mono { font-family: var(--mono); }
+.muted { color: var(--muted); }
+.small { font-size: 13px; line-height: 18px; }
+.hide { display: none !important; }
+
+/* Shell: tinted L-frame + white sheet. 228 + 1204 + 8 = 1440 */
+.shell { display: grid; grid-template-columns: var(--sidebar) 1fr; grid-template-rows: var(--topbar) 1fr; height: 100vh; }
+.sidebar { grid-row: 1 / 3; display: flex; flex-direction: column; padding: 12px 10px 16px; gap: 2px; }
+.brand { display: flex; align-items: center; gap: 10px; height: 36px; padding: 0 8px; margin-bottom: 14px; font-weight: 600; font-size: 15px; }
+.brand svg { flex: none; }
+.nav-item {
+  display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px;
+  border: 0; background: none; border-radius: var(--radius-control); color: #45474a; text-align: left; width: 100%;
+  transition: background-color .15s var(--ease);
+}
+.nav-item:hover { background: #e9e9e7; }
+.nav-item[aria-current="page"] { background: var(--active); color: var(--text); font-weight: 500; }
+.nav-item .count { margin-left: auto; font-size: 12px; color: var(--muted); }
+.nav-group { margin: 22px 10px 8px; font-size: 12px; color: var(--muted); }
+.side-foot { margin-top: auto; padding: 0 8px; display: grid; gap: 14px; }
+.topbar { display: flex; align-items: center; gap: 12px; padding: 0 16px 0 0; }
+.search { margin: 0 auto; width: min(548px, 50vw); height: 32px; display: flex; align-items: center; gap: 8px; padding: 0 10px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-control); color: var(--faint); }
+.search input { border: 0; outline: 0; flex: 1; background: none; min-width: 0; }
+.sheet {
+  min-width: 0;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sheet);
+  margin: 0 var(--sheet-inset) var(--sheet-inset) 0; overflow: auto; position: relative;
+}
+.page { padding: var(--pad); max-width: 1320px; }
+
+/* Controls */
+.btn {
+  height: var(--control-h); padding: 0 14px; border-radius: var(--radius-control);
+  border: 1px solid var(--control); background: var(--surface); display: inline-flex; align-items: center; gap: 8px;
+  white-space: nowrap; transition: background-color .15s var(--ease), border-color .15s var(--ease), transform .1s;
+}
+.btn:hover { background: var(--raised); }
+.btn:active { transform: translateY(1px); }
+.btn.primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+.btn.primary:hover { background: #393c3e; }
+.btn.ghost { border-color: transparent; background: none; }
+.btn.ghost:hover { background: var(--raised); }
+.btn.danger { color: var(--negative); border-color: #e9c4c4; }
+.btn.lg { height: 40px; padding: 0 18px; font-size: 15px; }
+.btn:disabled { background: var(--raised); border-color: var(--border); color: var(--faint); cursor: not-allowed; transform: none; }
+.icon-btn { width: 32px; height: 32px; display: inline-grid; place-items: center; border: 0; background: none; border-radius: var(--radius-control); color: #45474a; }
+.icon-btn:hover { background: #e9e9e7; }
+.seg { display: inline-flex; background: var(--raised); border-radius: var(--radius-control); padding: 2px; gap: 2px; }
+.seg button { height: 28px; padding: 0 12px; border: 0; background: none; border-radius: 4px; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--text); font-weight: 500; outline: 1px solid var(--border); outline-offset: -1px; }
+.field { display: grid; gap: 8px; }
+.field > span { font-weight: 500; }
+.input { height: 38px; padding: 0 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); width: 100%; }
+.input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+.pill { display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 999px; font-size: 12px; white-space: nowrap; flex: none; background: var(--pill-neutral-bg); color: var(--pill-neutral-ink); }
+.pill.pos { background: var(--pill-positive-bg); color: var(--pill-positive-ink); }
+.pill.neg { background: var(--pill-negative-bg); color: var(--pill-negative-ink); }
+.pill.warn { background: var(--pill-warning-bg); color: var(--pill-warning-ink); }
+.pill.accent { background: var(--accent-soft); color: #0f4553; }
+.card { border: 1px solid var(--border); border-radius: var(--radius-card); background: var(--surface); }
+.notice { padding: 10px 12px; border-radius: var(--radius-card); background: var(--pill-warning-bg); border: 1px solid #fde68a; color: var(--pill-warning-ink); font-size: 13px; }
+.check { display: flex; gap: 10px; align-items: flex-start; }
+.check input { width: 16px; height: 16px; margin: 2px 0 0; accent-color: var(--primary); flex: none; }
+.title-row { display: flex; align-items: center; gap: 16px; min-height: 40px; }
+.title-row h1 { font-size: var(--fs-title); line-height: 28px; font-weight: 600; }
+.title-row .actions { margin-left: auto; display: flex; gap: 8px; }
+.subline { margin-top: 4px; color: var(--muted); }
+.section-title { font-size: var(--fs-section); font-weight: 600; line-height: 24px; }
+
+/* Quota */
+.quota { display: grid; gap: 6px; }
+.quota .bar { height: 6px; border-radius: 3px; background: #e3e1da; overflow: hidden; }
+.quota .bar i { display: block; height: 100%; background: var(--accent); border-radius: 3px; transition: width .4s var(--ease); }
+.quota.low .bar i { background: #a86f0c; }
+
+/* Floating layers: the only things with shadow */
+.toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: var(--primary); color: #fff; padding: 10px 16px; border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,.18); z-index: 60; font-size: 13px; }
+dialog { border: 1px solid var(--border); border-radius: 12px; padding: 0; width: min(520px, calc(100vw - 32px)); box-shadow: 0 16px 48px rgba(0,0,0,.18); color: var(--text); }
+dialog::backdrop { background: rgba(19,20,22,.32); }
+.dlg-body { padding: 24px; display: grid; gap: 16px; }
+.dlg-foot { display: flex; justify-content: flex-end; gap: 8px; padding: 16px 24px; border-top: 1px solid var(--rule); }
+.pop { position: fixed; z-index: 50; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.12); padding: 6px; min-width: 240px; }
+.pop button { display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px; border: 0; background: none; border-radius: 6px; text-align: left; }
+.pop button:hover { background: var(--raised); }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+/* 共用：图像 */
+svg.pic { display: block; width: 100%; height: auto; }
+svg.strip { height: auto; max-height: 14px; width: auto; max-width: 100%; display: block; }
+.bead-row > svg.strip { min-width: 0; }
+.mini-thumb { width: 24px; height: 24px; border-radius: 4px; overflow: hidden; flex: none; border: 1px solid var(--border); display: inline-block; }
+.mini-thumb.lg { width: 48px; height: 48px; border-radius: 6px; }
+.avatar { width: 24px; height: 24px; border-radius: 50%; background: var(--active); display: inline-grid; place-items: center; font-size: 12px; }
+.account { display: flex; align-items: center; gap: 8px; }
+.link { border: 0; background: none; padding: 0; color: var(--text); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--control); font-size: 13px; }
+.link:hover { text-decoration-color: var(--text); }
+.link:disabled { color: var(--faint); text-decoration: none; cursor: not-allowed; }
+.empty-line { margin-top: 24px; padding: 12px 16px; border: 1px dashed var(--control); border-radius: 8px; color: var(--muted); }
+.phone-only { display: none; }
+.agent-btn { margin-left: 0; }
+
+/* 首页：首次使用 */
+.first-run { margin-top: 24px; display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: var(--gap); align-items: start; }
+.drop-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.drop { aspect-ratio: 1; border: 1.5px dashed #d9dadc; border-radius: var(--radius-card); background: var(--raised); display: grid; place-content: center; justify-items: center; gap: 6px; padding: 16px; text-align: center; transition: border-color .15s var(--ease), background-color .15s var(--ease); }
+.drop:hover:not(:disabled) { border-color: var(--text); background: #f1f0ec; }
+.drop:disabled { cursor: not-allowed; opacity: .7; }
+.drop-guide svg { width: 120px; }
+.drop-label { font-weight: 500; font-size: 15px; }
+.drop.filled { border: 1px solid var(--border); padding: 0; background: none; margin: 0; overflow: hidden; display: block; aspect-ratio: auto; }
+.field .seg { width: fit-content; }
+.drop.filled figcaption { display: flex; justify-content: space-between; padding: 8px 10px; font-size: 13px; color: var(--muted); }
+.first-run-side { background: var(--raised); border-radius: var(--radius-card); padding: 20px; display: grid; gap: 14px; }
+.path { margin: 0; padding-left: 20px; display: grid; gap: 12px; }
+.path li::marker { color: var(--accent); font-weight: 600; }
+.path b { display: block; font-weight: 600; }
+.path span { color: var(--muted); }
+
+/* 首页：工作室列表 */
+.waiting { margin-top: 20px; display: grid; gap: 8px; }
+.waiting-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; background: var(--accent-soft); border-radius: var(--radius-card); }
+.waiting-item .btn { margin-left: auto; }
+.waiting-item .mini-thumb { width: 36px; height: 36px; }
+.studio-list { margin-top: 24px; display: grid; gap: 16px; }
+.studio-row { display: grid; grid-template-columns: 230px minmax(0, 1fr) minmax(0, 1fr) auto; gap: 24px; align-items: center; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius-card); }
+.studio-scenes { display: grid; grid-template-columns: 172px 54px; grid-template-rows: repeat(3, 54px); gap: 4px; width: 230px; border: 0; padding: 0; background: none; border-radius: 6px; overflow: hidden; height: 172px; }
+.studio-scenes svg { height: 100%; width: 100%; object-fit: cover; }
+.studio-scenes svg:first-child { grid-row: 1 / 4; }
+.studio-scenes svg:nth-child(n+2) { height: 100%; }
+.studio-meta { display: grid; gap: 8px; }
+.studio-meta a { color: inherit; text-decoration: none; }
+.studio-meta a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.who { display: flex; align-items: center; gap: 8px; }
+.model-thumb { width: 32px; height: 32px; border-radius: 50%; overflow: hidden; flex: none; }
+.studio-pieces { display: grid; gap: 8px; }
+.piece-chips, .piece-pick { display: flex; flex-wrap: wrap; gap: 8px; }
+.piece-chip { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 10px 0 4px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); }
+.piece-chip svg { width: 30px; height: 30px; border-radius: 4px; }
+.piece-chip:hover { border-color: var(--control); }
+.piece-chip[aria-pressed="true"] { border-color: var(--accent); outline: 1px solid var(--accent); outline-offset: -2px; }
+
+/* 上新：builder */
+.builder { display: grid; grid-template-rows: 52px 1fr; min-height: 100%; }
+.builder-bar { display: flex; align-items: center; gap: 10px; padding: 0 16px; border-bottom: 1px solid var(--rule); }
+.builder-bar h1 { font-size: 16px; font-weight: 600; }
+.builder-body { display: grid; grid-template-columns: 232px minmax(0, 1fr); }
+.builder-side { padding: 20px 16px; border-right: 1px solid var(--rule); display: grid; align-content: start; gap: 20px; }
+.side-piece { display: grid; grid-template-columns: 56px 1fr; gap: 10px; align-items: center; }
+.side-piece svg { border-radius: 6px; border: 1px solid var(--border); }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.steps li { border-radius: 6px; color: var(--muted); }
+.step-jump { display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 8px; width: 100%; border: 0; background: none; color: inherit; border-radius: 6px; text-align: left; }
+.step-jump:hover:not(:disabled) { background: #e9e9e7; }
+.step-jump:disabled { cursor: default; }
+.steps li i { width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid var(--control); margin: 0 3px; }
+.steps li.done { color: var(--text); }
+.steps li.done svg { color: var(--accent); }
+.steps li.now { background: var(--active); color: var(--text); font-weight: 500; }
+.steps li.now i { border-color: var(--text); background: var(--text); }
+.canvas { padding: 28px 32px 32px; background: var(--surface); }
+.step { max-width: 980px; }
+.step-title { font-size: 20px; line-height: 28px; font-weight: 600; margin-bottom: 4px; }
+.step-foot { margin-top: 28px; padding-top: 16px; border-top: 1px solid var(--rule); display: flex; align-items: center; gap: 8px; }
+.step-foot > :last-child { margin-left: auto; }
+.step-foot > :first-child:not(:last-child) { margin-right: auto; }
+.step-foot .btn + .btn { margin-left: 0; }
+.size-row { margin-top: 24px; display: grid; grid-template-columns: 200px 200px 1fr; gap: 16px; align-items: end; }
+.input-unit { position: relative; display: block; }
+.input-unit i { position: absolute; right: 12px; top: 10px; font-style: normal; color: var(--muted); font-size: 12px; }
+.tape { margin: 0; display: flex; align-items: center; gap: 10px; }
+.tape svg { width: 120px; flex: none; }
+.views-compare { margin-top: 20px; display: grid; gap: 12px; }
+.vc { display: grid; grid-template-columns: 1fr 32px 1fr; align-items: center; gap: 8px; max-width: 560px; }
+.vc figure { margin: 0; display: grid; gap: 6px; }
+.vc svg { border-radius: 6px; border: 1px solid var(--border); }
+.vc-arrow { text-align: center; color: var(--muted); }
+@media (min-width: 1100px) { .views-compare { grid-template-columns: repeat(3, minmax(0, 1fr)); } .vc { grid-template-columns: 1fr 20px 1fr; } }
+.bead-check { margin-top: 16px; display: flex; align-items: center; gap: 12px; padding: 10px 12px; background: var(--accent-soft); border-radius: 8px; width: fit-content; }
+.pick-grid { margin-top: 20px; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: var(--gap); }
+.pick-col { display: grid; gap: 10px; align-content: start; }
+.pick-col.new { background: var(--raised); border-radius: var(--radius-card); padding: 20px; justify-items: start; }
+.pick-studio { display: grid; grid-template-columns: 72px 1fr auto; gap: 12px; align-items: center; padding: 8px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); text-align: left; }
+.pick-studio:hover { border-color: var(--text); }
+.pick-studio svg { border-radius: 4px; }
+.pick-meta { display: grid; gap: 2px; }
+.reason { margin-top: 20px; display: flex; align-items: center; gap: 12px; }
+.qa { margin-top: 20px; display: grid; gap: 16px; }
+.q { border: 0; padding: 0; margin: 0; }
+.q legend { font-weight: 500; margin-bottom: 8px; }
+.opts { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.opt { height: 34px; padding: 0 14px; border: 1px solid var(--control); border-radius: 999px; background: var(--surface); transition: background-color .15s var(--ease); }
+.opt:hover { background: var(--raised); }
+.opt[aria-pressed="true"] { background: var(--primary); border-color: var(--primary); color: #fff; }
+.opt.sm { height: 28px; padding: 0 10px; font-size: 13px; }
+.input.other { width: 220px; height: 34px; }
+.ref-row { margin-top: 20px; display: flex; align-items: center; gap: 8px; }
+.setcard { margin-top: 20px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gap); max-width: 760px; }
+.setcard section { background: var(--raised); border-radius: var(--radius-card); padding: 16px 20px; display: grid; gap: 4px; }
+.kv { display: grid; grid-template-columns: 56px 1fr; align-items: center; min-height: 36px; border-top: 1px solid #ebeae5; }
+.kv:first-of-type { border-top: 0; }
+.kv-select { border: 0; background: none; height: 32px; padding: 0 4px; border-radius: 6px; font-weight: 500; }
+.kv-select:hover { background: var(--surface); }
+.scene-grid { margin-top: 20px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.scene-cell { margin: 0; display: grid; gap: 6px; transition: opacity .2s var(--ease); }
+
+.scene-cell svg { border-radius: 6px; }
+.scene-cell figcaption { display: flex; justify-content: space-between; font-size: 13px; }
+.scene-cell.off svg { opacity: .28; }
+.model-grid { margin-top: 10px; display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+.model-tile { border: 1px solid var(--border); border-radius: 8px; background: var(--surface); padding: 0; overflow: hidden; text-align: left; display: grid; }
+.model-tile > span { padding: 8px 10px; display: grid; gap: 2px; }
+.model-tile:hover { border-color: var(--control); }
+.model-tile[aria-pressed="true"] { border-color: var(--accent); outline: 1px solid var(--accent); outline-offset: -2px; }
+.model-make { margin-top: 24px; display: flex; align-items: end; gap: 12px; flex-wrap: wrap; }
+.model-make .field { flex: 1; min-width: 280px; max-width: 520px; }
+.joined { display: flex; }
+.joined .input { border-radius: 8px 0 0 8px; }
+.joined .btn { height: 38px; border-radius: 0 8px 8px 0; margin-left: -1px; }
+.build-preview { margin-top: 20px; display: grid; grid-template-columns: minmax(0, 1fr) 200px; gap: var(--gap); }
+.scene-strip { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 8px; }
+.scene-strip svg, .build-model svg { border-radius: 6px; }
+.build-model { display: grid; gap: 8px; }
+.build-model span { display: grid; }
+.howto { margin-top: 32px; display: grid; gap: 4px; }
+.howto-row { margin-top: 12px; max-width: 760px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.howto-row figure { margin: 0; display: grid; gap: 6px; }
+.howto-row svg { border-radius: 6px; }
+
+
+/* 成片示例 */
+.samples { margin-top: 40px; display: grid; gap: 8px; }
+.samples-head { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.contact.sample-sheet { margin-top: 8px; grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.sample-mark { position: absolute; left: 6px; top: 6px; font-size: 12px; line-height: 18px; padding: 0 6px; border-radius: 4px; background: rgba(255,255,255,.88); color: var(--text); }
+@media (max-width: 1100px) { .contact.sample-sheet { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 760px) { .contact.sample-sheet { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* 工作室 */
+.crumb a { color: var(--muted); text-decoration: none; }
+.crumb a:hover { color: var(--text); }
+.studio-grid { margin-top: 20px; display: grid; grid-template-columns: 288px minmax(0, 1fr); gap: var(--gap); align-items: start; }
+.shoot-panel { position: sticky; top: 0; background: var(--raised); border-radius: var(--radius-card); padding: 16px; display: grid; gap: 16px; }
+.shoot-panel .seg { width: fit-content; background: var(--active); }
+.seg.sub { margin-left: 26px; }
+.stepper { display: inline-flex; align-items: center; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; width: fit-content; }
+.stepper b { min-width: 48px; text-align: center; font-weight: 500; }
+.shoot-btn { width: 100%; justify-content: center; }
+.sets { display: grid; gap: 32px; }
+.set-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+.set-like { margin-left: auto; }
+.set-like b { color: var(--accent); font-weight: 600; }
+.set.older .contact { opacity: .92; }
+.contact { display: grid; grid-template-columns: repeat(auto-fill, minmax(196px, 1fr)); gap: 16px; }
+.frame { margin: 0; display: grid; gap: 8px; align-content: start; }
+.frame > svg, .frame .shot svg { border-radius: 6px; border: 1px solid var(--border); }
+.frame figcaption { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.shot { position: relative; }
+.ai-mark { position: absolute; right: 6px; bottom: 6px; font-size: 12px; line-height: 18px; padding: 0 6px; border-radius: 4px; background: rgba(19, 20, 22, .62); color: #fff; }
+.bead-row { display: grid; grid-template-columns: 34px 1fr; align-items: center; gap: 6px; }
+.verdict { display: inline-flex; gap: 4px; }
+.vbtn { height: 28px; padding: 0 12px; border: 1px solid var(--control); border-radius: 999px; background: var(--surface); font-size: 13px; }
+.vbtn:hover { background: var(--raised); }
+.vbtn[aria-pressed="true"]:first-child { background: var(--accent); border-color: var(--accent); color: #fff; }
+.vbtn[aria-pressed="true"]:last-child { background: var(--pill-negative-bg); border-color: #e9b7b7; color: var(--pill-negative-ink); }
+.frame.bad .shot svg { outline: 2px solid #e9b7b7; outline-offset: 1px; }
+.ask { display: grid; gap: 6px; padding: 8px; background: var(--raised); border-radius: 6px; }
+.frame .notice { margin: 0; }
+.frame.failed .fail-box { aspect-ratio: 1; border: 1px dashed #d9dadc; border-radius: 6px; display: grid; place-content: center; justify-items: center; gap: 6px; text-align: center; padding: 12px; }
+.set-empty { display: grid; gap: 8px; justify-items: start; }
+.ghost-sheet { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; width: 100%; margin-bottom: 8px; }
+.ghost-sheet i { aspect-ratio: 1; border: 1px dashed #d9dadc; border-radius: 6px; }
+
+/* 总资产 */
+.tabs { margin-top: 16px; display: flex; gap: 20px; border-bottom: 1px solid var(--border); }
+.tabs button { height: 40px; border: 0; background: none; padding: 0 2px; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.tabs button[aria-selected="true"] { color: var(--text); border-bottom-color: var(--text); font-weight: 600; }
+.asset-table { margin-top: 8px; width: 100%; border-collapse: collapse; }
+.asset-table th { text-align: left; font-weight: 400; font-size: 12px; color: var(--muted); height: 36px; border-bottom: 1px solid var(--border); }
+.asset-table td { height: 64px; border-bottom: 1px solid var(--rule); }
+.row-id { display: flex; align-items: center; gap: 12px; }
+.row-act { text-align: right; }
+.shot-wall { margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; }
+
+/* Agent：浮在纸面上，唯一常驻浮层 */
+.agent { position: fixed; top: 56px; right: 16px; bottom: 16px; width: 380px; z-index: 40; display: none; }
+.agent.open { display: grid; grid-template-rows: auto 1fr auto auto auto; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,.14); overflow: hidden; }
+.agent-head { display: flex; align-items: center; gap: 8px; padding: 10px 12px 10px 16px; border-bottom: 1px solid var(--rule); }
+.agent-head .icon-btn { margin-left: auto; }
+.agent-log { overflow: auto; padding: 16px; display: grid; gap: 10px; align-content: start; }
+.msg { max-width: 92%; padding: 10px 12px; border-radius: 10px; background: var(--raised); display: grid; gap: 8px; }
+.msg.u { justify-self: end; background: var(--primary); color: #fff; }
+.mini-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; display: grid; gap: 4px; font-size: 13px; }
+.mini-scenes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+.mini-scene { border: 0; padding: 0; background: none; border-radius: 4px; overflow: hidden; display: block; }
+.mini-scene[aria-pressed="false"] { opacity: .3; }
+.msg-act { display: flex; gap: 8px; flex-wrap: wrap; }
+.sm-btn { height: 28px; margin-left: 8px; }
+.agent-tips { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 12px; border-top: 1px solid var(--rule); }
+.agent-tips .opt { flex: none; }
+.agent-form { display: flex; gap: 8px; padding: 0 12px 10px; }
+.adv { padding: 0 16px 12px; color: var(--muted); }
+.adv summary { cursor: pointer; }
+.nobadge summary { cursor: pointer; color: var(--muted); }
+
+@media (min-width: 1280px) { body.agent-on .sheet { margin-right: 404px; } }
+
+/* 平板与手机：外框消失，纸面即屏幕 */
+@media (max-width: 1100px) {
+  .shell { grid-template-columns: minmax(0, 1fr); grid-template-rows: 48px minmax(0, 1fr); }
+  .shell > * { min-width: 0; }
+  .sidebar { position: fixed; inset: 0 auto 0 0; width: 280px; z-index: 45; background: var(--frame); transform: translateX(-100%); transition: transform .25s var(--ease); }
+  body.nav-open .sidebar { box-shadow: 0 0 40px rgba(0,0,0,.18); }
+  body.nav-open .sidebar { transform: none; }
+  .phone-only { display: inline-grid; }
+  .topbar { padding: 0 8px; }
+  .agent-btn { margin-left: auto; }
+  .sheet { margin: 0; border-radius: 0; border-width: 1px 0 0; }
+  .first-run { grid-template-columns: minmax(0, 1fr); }
+  .studio-row { grid-template-columns: 240px 1fr; }
+  .studio-pieces, .studio-act { grid-column: 2; }
+  .studio-grid { grid-template-columns: 1fr; }
+  .shoot-panel { position: static; }
+  .pick-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 760px) {
+  .search { display: none; }
+  .first-run, .howto, .pick-grid, .studio-grid { grid-template-columns: minmax(0, 1fr); }
+  .page { padding: 16px; }
+  .title-row { flex-wrap: wrap; }
+  .title-row .actions { margin-left: 0; width: 100%; }
+  .drop-row { grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .drop { padding: 8px; min-width: 0; }
+  .drop .small { font-size: 12px; }
+  .drop-label { font-size: 14px; }
+  .drop-guide svg { width: 64px; }
+  .studio-row { grid-template-columns: 1fr; }
+  .studio-pieces, .studio-act { grid-column: auto; }
+  .builder-body { grid-template-columns: 1fr; }
+  .builder-side { border-right: 0; border-bottom: 1px solid var(--rule); padding: 12px 16px; }
+  .steps { grid-auto-flow: column; overflow-x: auto; }
+  .steps li:not(.now) span { display: none; }
+  .canvas { padding: 20px 16px; }
+  .size-row, .setcard, .build-preview { grid-template-columns: 1fr; }
+  .scene-grid { grid-template-columns: 1fr 1fr; }
+  .contact { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .agent { inset: 48px 0 0 0; width: auto; }
+  .agent.open { border-radius: 0; }
+  .asset-table th:nth-child(2), .asset-table td:nth-child(2) { display: none; }
+  .ghost-sheet { grid-template-columns: repeat(3, 1fr); }
+  .studio-grid:has(.set) .sets { order: -1; }
+}
+.usage { margin-top: 40px; display: grid; gap: 4px; }
+.usage a { color: inherit; }
+.asset-table td.num, .asset-table th.num { text-align: right; padding-right: 8px; }
+
+/* 终审修复 */
+.crumb a { display: inline-flex; align-items: center; gap: 4px; }
+.studio-id { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); }
+.id-thumb { width: 40px; height: 40px; border-radius: 6px; overflow: hidden; flex: none; border: 1px solid var(--border); }
+.id-thumb.round { border-radius: 50%; }
+.id-plus { color: var(--faint); }
+.bead-compare { display: grid; gap: 4px; }
+svg.compare { width: auto; max-width: 100%; height: 36px; display: block; }
+.diff-note { color: #0f4553; font-weight: 500; }
+.frame.ai { position: relative; }
+.pop-ask { position: absolute; left: 0; right: 0; top: calc(100% + 4px); z-index: 20; background: var(--surface); border: 1px solid var(--border); box-shadow: 0 8px 24px rgba(0,0,0,.12); border-radius: 8px; }
+.shoot-bar { display: none; }
+@media (max-width: 760px) {
+  .shoot-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; position: sticky; bottom: 0; z-index: 15; margin: 0 -16px; padding: 10px 16px; background: var(--surface); border-top: 1px solid var(--border); grid-row: 99; }
+  .studio-grid { display: flex; flex-direction: column; align-items: stretch; }
+  .shoot-panel > .shoot-btn, .shoot-panel > .shoot-btn + p { display: none; }
+  .studio-grid:has(.set) .sets { order: -1; }
+  .shoot-bar { order: 10; }
+  .pop-ask { position: static; box-shadow: none; }
+}
+</style></head><body>
+<div id="app"></div><div id="layer"></div>
+<script>
+// 示例数据：全部为原型演示用，非真实用户或作品。
+const QUOTA_TOTAL = 200;
+const RETAKE_LIMIT = 3; // 【待定】与 Agent 重试上限共用
+const CAT = { necklace: '项链', bracelet: '手链', earring: '耳饰' };
+const SIZE_FIELDS = {
+  necklace: [['链长', true], ['吊坠尺寸', false]],
+  bracelet: [['手围', true], ['主珠尺寸', false]],
+  earring: [['垂坠总长', true], ['主体宽度', false]],
+};
+const DEFAULT_COMP = {
+  necklace: { comp: '局部特写', face: '不露脸', label: '颈部特写' },
+  bracelet: { comp: '局部特写', face: '不露脸', label: '手腕特写' },
+  earring: { comp: '局部特写', face: '侧脸', label: '耳部特写' },
+};
+
+// 珠序：每件作品是一串固定的珠子，三视图、成片都按它绘制
+const SAMPLE_PIECES = [
+  { name: '雾凇', cat: 'necklace', sizes: ['42', '1.2'],
+    beads: ['pearl','pearl','silver','pearl','pearl','silver','pearl','pearl','silver','pearl','pearl','silver','pearl','pearl'],
+    pendant: { shape: 'drop', color: '#cfd8de', size: 1.2 }, note: '淡水珍珠 · 银珠 · 月光石吊坠' },
+  { name: '月白', cat: 'necklace', sizes: ['45', '0.9'],
+    beads: ['pearl','silver','silver','pearl','silver','silver','pearl','silver','silver','pearl','silver','silver','pearl'],
+    pendant: { shape: 'round', color: '#e8e4da', size: 0.9 }, note: '贝母圆片 · 银珠' },
+  { name: '青梅', cat: 'bracelet', sizes: ['16', '0.8'],
+    beads: ['jade','jade','silver','jade','jade','silver','jade','jade','silver','jade','jade','silver','jade','jade','silver','jade'],
+    pendant: { shape: 'leaf', color: '#7fae8e', size: 0.8 }, note: '绿玉髓 · 银珠 · 银叶吊饰' },
+  { name: '小潮汐', cat: 'earring', sizes: ['3.2', '1.4'],
+    beads: ['glass'], pendant: { shape: 'wave', color: '#4f86a8', size: 1.4 }, note: '银圈 · 蓝色琉璃坠' },
+];
+const BEAD_COLOR = { pearl: '#efece4', silver: '#b9bec4', jade: '#7fae8e', glass: '#4f86a8' };
+
+// 气质问答：【待定】正式问题与选项，下为示例
+const QUESTIONS = [
+  { id: 'mood', q: '这件作品给人的第一感觉？', opts: ['清冷', '温柔', '明亮', '复古'] },
+  { id: 'wear', q: '买它的人会在什么时候戴？', opts: ['通勤', '约会', '海边旅行', '日常'] },
+  { id: 'light', q: '想要什么样的光？', opts: ['清晨窗光', '午后暖光', '阴天柔光'] },
+  { id: 'material', q: '背景想要什么材质？', opts: ['亚麻布', '旧木桌', '海边礁石', '石膏墙'] },
+];
+// 材质决定场景色场；光线微调
+const SCENE_PALETTES = {
+  '亚麻布': { wall: '#e9e4da', floor: '#d8cfc0', prop: '#b9a98f', accent: '#8a9a8c', tone: '米白、浅灰绿' },
+  '旧木桌': { wall: '#e4ddd2', floor: '#9c7a5b', prop: '#c9b79c', accent: '#5f6f5a', tone: '胡桃木、奶白' },
+  '海边礁石': { wall: '#cfdde3', floor: '#8d9496', prop: '#e7e1d4', accent: '#3f6f86', tone: '雾蓝、礁石灰' },
+  '石膏墙': { wall: '#efede8', floor: '#dcd8cf', prop: '#c4bfb4', accent: '#9b8f80', tone: '石膏白、暖灰' },
+};
+const LIGHT_SHIFT = { '清晨窗光': 'cool', '午后暖光': 'warm', '阴天柔光': 'soft' };
+const MOOD_MODEL = {
+  '清冷': { temper: '清冷、安静', outfit: '浅灰针织', pose: '微微侧身' },
+  '温柔': { temper: '温柔、松弛', outfit: '米白衬衫', pose: '手轻搭锁骨' },
+  '明亮': { temper: '明亮、利落', outfit: '白色背心', pose: '正面直立' },
+  '复古': { temper: '复古、沉静', outfit: '墨绿丝绒', pose: '低头侧望' },
+};
+const WEAR_ATMO = { '通勤': '利落安静', '约会': '柔和亲近', '海边旅行': '开阔透气', '日常': '松弛自然' };
+
+// 平台预置模特库（数字人）
+const PRESET_MODELS = [
+  { id: 'm1', hairStyle: 'short', name: '阿洛', skin: '#e8c4a8', hair: '#2b2420', outfit: '#c9cdd0', temper: ['清冷', '复古'], desc: '短发、颈线修长' },
+  { id: 'm2', hairStyle: 'long', name: '小满', skin: '#f0cfb4', hair: '#3a2a20', outfit: '#efe9df', temper: ['温柔', '明亮'], desc: '长发、肩线柔和' },
+  { id: 'm3', hairStyle: 'bun', name: '青禾', skin: '#d9b08f', hair: '#1f1a17', outfit: '#3f5a4c', temper: ['复古', '清冷'], desc: '盘发、手指纤长' },
+  { id: 'm4', hairStyle: 'curly', name: '南枝', skin: '#f2d6c0', hair: '#5a3b28', outfit: '#f4f1ea', temper: ['明亮', '温柔'], desc: '卷发、笑意' },
+  { id: 'm5', hairStyle: 'short', name: '予安', skin: '#c99a78', hair: '#231c18', outfit: '#d8d2c6', temper: ['清冷', '明亮'], desc: '利落短发' },
+  { id: 'm6', hairStyle: 'side', name: '知夏', skin: '#ebc2a2', hair: '#2e2620', outfit: '#b7c4cc', temper: ['温柔', '复古'], desc: '低马尾' },
+];
+
+// 全局状态：新用户从零开始
+const S = {
+  user: { shop: '示例店铺', isNew: true },
+  pieces: [], scenes: [], models: PRESET_MODELS.map(m => ({ ...m, source: 'preset' })),
+  studios: [], shots: [], refs: [], usage: [], followups: [], exportLogs: [], consentLogs: [],
+  sampleCursor: 0, seq: 1,
+};
+const uid = p => p + (S.seq++);
+const used = () => S.usage.reduce((n, u) => n + u.count, 0); // 额度从记录行计算
+const left = () => QUOTA_TOTAL - used();
+function spend(count, what) {
+  if (count > left()) return false;
+  S.usage.push({ count, what, at: new Date() });
+  console.assert(used() + left() === QUOTA_TOTAL, 'quota rows must add up');
+  return true;
+}
+const studiosUsing = (kind, id) => S.studios.filter(s => s[kind + 'Id'] === id);
+const byId = (list, id) => list.find(x => x.id === id);
+
+// 饰品绘制：同一份珠序在实拍、三视图、成片中复用（保真的可视化）
+const svg = (w, h, body, cls = '') => `<svg class="${cls}" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" role="img">${body}</svg>`;
+
+function pendantPath(p, x, y, s) {
+  const r = 9 * s;
+  if (p.shape === 'drop') return `<path d="M${x} ${y} C ${x + r} ${y + r * 1.2}, ${x + r * .8} ${y + r * 2.4}, ${x} ${y + r * 2.6} C ${x - r * .8} ${y + r * 2.4}, ${x - r} ${y + r * 1.2}, ${x} ${y}Z" fill="${p.color}" stroke="#8d969c" stroke-width="1"/>`;
+  if (p.shape === 'round') return `<circle cx="${x}" cy="${y + r}" r="${r}" fill="${p.color}" stroke="#a7a39a" stroke-width="1"/>`;
+  if (p.shape === 'leaf') return `<path d="M${x} ${y} Q ${x + r * 1.1} ${y + r * 1.2} ${x} ${y + r * 2.4} Q ${x - r * 1.1} ${y + r * 1.2} ${x} ${y}Z" fill="#b9bec4" stroke="#8d969c" stroke-width="1"/><path d="M${x} ${y + 2} L ${x} ${y + r * 2.2}" stroke="#8d969c" stroke-width=".8"/>`;
+  // wave: 琉璃坠
+  return `<path d="M${x - r} ${y + r} Q ${x - r * .3} ${y - r * .2} ${x} ${y + r * .4} Q ${x + r * .5} ${y + r} ${x + r} ${y + r * .2} L ${x + r * .7} ${y + r * 2} Q ${x} ${y + r * 2.6} ${x - r * .8} ${y + r * 2}Z" fill="${p.color}" stroke="#2f5870" stroke-width="1"/>`;
+}
+
+// 返回饰品主体（不含背景），在 (cx, cy) 处，scale 控制大小
+// view: front | side | back；pendantScale 用于演示「吊坠被画大」的保真偏差
+function pieceBody(pc, cx, cy, scale = 1, view = 'front', pendantScale = 1) {
+  const n = pc.beads.length;
+  let out = '';
+  if (pc.cat === 'earring') {
+    const r = 14 * scale;
+    out += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#b9bec4" stroke-width="${2.4 * scale}"/>`;
+    if (view !== 'side') out += pendantPath({ ...pc.pendant }, cx, cy + r, scale * 1.4 * pendantScale);
+    else out += `<rect x="${cx - 3 * scale}" y="${cy + r}" width="${6 * scale}" height="${30 * scale}" rx="${3 * scale}" fill="${pc.pendant.color}"/>`;
+    return out;
+  }
+  const isNeck = pc.cat === 'necklace';
+  const sq = view === 'side' ? .32 : view === 'wrist' ? .5 : 1;
+  const rx = (isNeck ? 70 : 46) * scale * sq;
+  const ry = (isNeck ? 58 : 46) * scale;
+  const pts = [];
+  if (isNeck) {
+    // 珠子沿链条的二次曲线排布，吊坠挂在最低点
+    const P0 = [cx - rx * 1.05, cy - ry * .9], P1 = [cx, cy + ry * 1.25], P2 = [cx + rx * 1.05, cy - ry * .9];
+    const q = (t, i) => (1 - t) ** 2 * P0[i] + 2 * (1 - t) * t * P1[i] + t * t * P2[i];
+    for (let i = 0; i < n; i++) { const t = .1 + .8 * (i / (n - 1)); pts.push([q(t, 0), q(t, 1)]); }
+    out += `<path d="M${P0[0]} ${P0[1]} Q ${P1[0]} ${P1[1]} ${P2[0]} ${P2[1]}" fill="none" stroke="#a9aeb3" stroke-width="${1.2 * scale}"/>`;
+  } else {
+    for (let i = 0; i < n; i++) { const t = Math.PI * 2 * (i / n); pts.push([cx + Math.cos(t) * rx, cy - Math.sin(t) * ry]); }
+    out += `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="none" stroke="#a9aeb3" stroke-width="${1 * scale}"/>`;
+  }
+  pts.forEach(([x, y], i) => {
+    const b = pc.beads[i], r = (b === 'silver' ? 4.2 : 6) * scale;
+    out += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="${BEAD_COLOR[b]}" stroke="rgba(0,0,0,.18)" stroke-width=".8"/>`;
+  });
+  if (isNeck && view !== 'back') out += pendantPath(pc.pendant, cx, cy + ry * .175 + 3 * scale, scale * pendantScale);
+  if (view === 'back') out += `<rect x="${cx - 5 * scale}" y="${cy - ry * .98}" width="${10 * scale}" height="${6 * scale}" rx="2" fill="#9aa0a6"/>`;
+  if (!isNeck && view !== 'side') out += pendantPath(pc.pendant, cx + rx * .72, cy + ry * .62, scale * .8);
+  return out;
+}
+
+const VIEW_LABEL = { front: '正面', side: '侧面', back: '反面' };
+// 实拍：桌面背景、略带倾斜与阴影（用户手机随手拍）
+function rawPhoto(pc, view) {
+  const tilt = { front: -6, side: 9, back: 4 }[view];
+  return svg(240, 240, `<rect width="240" height="240" fill="#d6c9b4"/><rect y="150" width="240" height="90" fill="#cbbca4"/>
+    <ellipse cx="128" cy="150" rx="78" ry="16" fill="#bfae94"/>
+    <g transform="rotate(${tilt} 120 120)">${pieceBody(pc, 120, 112, 1, view)}</g>`, 'pic');
+}
+// 标准三视图：只抠图与统一背景，饰品图形与实拍同一份
+function stdView(pc, view, bg = '#f7f7f5') {
+  return svg(240, 240, `<rect width="240" height="240" fill="${bg}"/>${pieceBody(pc, 120, 112, 1, view)}`, 'pic');
+}
+// 珠序条：实拍珠序 vs 本张成片中的饰品
+function beadStrip(pc, pendantScale = 1) {
+  const n = pc.beads.length, w = Math.max(n * 9 + 26, 60);
+  let s = '';
+  pc.beads.forEach((b, i) => { s += `<circle cx="${6 + i * 9}" cy="7" r="${b === 'silver' ? 2.6 : 3.4}" fill="${BEAD_COLOR[b]}" stroke="rgba(0,0,0,.25)" stroke-width=".6"/>`; });
+  const px = 6 + n * 9 + 6, pr = 4 * pendantScale;
+  s += `<circle cx="${px + pr}" cy="7" r="${pr}" fill="${pc.pendant.color}" stroke="rgba(0,0,0,.3)" stroke-width=".6"/>`;
+  return svg(px + pr * 2 + 2, 14, s, 'strip');
+}
+function sizeChart(pc) {
+  const f = SIZE_FIELDS[pc.cat];
+  return svg(240, 240, `<rect width="240" height="240" fill="#ffffff"/>${pieceBody(pc, 120, 104, .9, 'front')}
+    <path d="M40 206 H200" stroke="#131416" stroke-width="1"/><path d="M40 200 V212 M200 200 V212" stroke="#131416"/>
+    <text x="120" y="226" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" fill="#131416">${f[0][0]} ${pc.sizes[0]} cm</text>
+    ${pc.sizes[1] ? `<text x="20" y="28" font-family="IBM Plex Mono, monospace" font-size="10" fill="#5d5f60">${f[1][0]} ${pc.sizes[1]} cm</text>` : ''}`, 'pic');
+}
+
+// 珠序对照：实拍一行、本张一行，逐颗对齐；吊坠大小不一致时用铜绿圈出
+function beadCompare(pc, pendantScale = 1) {
+  const n = pc.beads.length, gap = Math.min(11, 150 / Math.max(n, 1)), x0 = 30;
+  const px = x0 + n * gap + 8, rowY = [9, 27];
+  let s = '';
+  ['实拍', '本张'].forEach((label, r) => {
+    s += `<text x="0" y="${rowY[r] + 4}" font-size="11" fill="#5d5f60" font-family="IBM Plex Sans, PingFang SC, sans-serif">${label}</text>`;
+    pc.beads.forEach((b, i) => { s += `<circle cx="${x0 + i * gap + gap / 2}" cy="${rowY[r]}" r="${b === 'silver' ? 3.4 : 4.6}" fill="${BEAD_COLOR[b]}" stroke="rgba(0,0,0,.28)" stroke-width=".7"/>`; });
+    const pr = 5 * (r ? pendantScale : 1);
+    s += `<circle cx="${px}" cy="${rowY[r]}" r="${pr}" fill="${pc.pendant.color}" stroke="rgba(0,0,0,.32)" stroke-width=".7"/>`;
+  });
+  if (pendantScale !== 1) s += `<circle cx="${px}" cy="${rowY[1]}" r="${5 * pendantScale + 3}" fill="none" stroke="#1b6c80" stroke-width="1.6"/>`;
+  return svg(px + 18, 36, s, "compare");
+}
+
+// 场景：同一组色场的四个机位；模特：局部特写轮廓，不画五官
+const ANGLES = ['主拍摄区', '左侧角度', '右侧角度', '远景氛围'];
+function shade(hex, amt) {
+  const n = parseInt(hex.slice(1), 16);
+  const c = [n >> 16, (n >> 8) & 255, n & 255].map(v => Math.max(0, Math.min(255, Math.round(v + amt))));
+  return '#' + c.map(v => v.toString(16).padStart(2, '0')).join('');
+}
+function lit(p, light) {
+  const k = { cool: [-4, 0, 6], warm: [8, 2, -8], soft: [0, 0, 0] }[light] || [0, 0, 0];
+  const t = hex => { const n = parseInt(hex.slice(1), 16); return '#' + [n >> 16, (n >> 8) & 255, n & 255].map((v, i) => Math.max(0, Math.min(255, v + k[i]))).map(v => v.toString(16).padStart(2, '0')).join(''); };
+  return { wall: t(p.wall), floor: t(p.floor), prop: t(p.prop), accent: t(p.accent) };
+}
+// 场景背景（w×h），angle 0..3；variant 让「重新生成」有变化
+function sceneBg(sc, angle, w = 240, h = 240) {
+  const c = lit(sc.palette, sc.light), v = sc.variant || 0;
+  const horizon = [0.62, 0.66, 0.58, 0.72][angle] * h;
+  let s = `<rect width="${w}" height="${h}" fill="${c.wall}"/>`;
+  if (sc.material === '海边礁石') {
+    s += `<rect y="${horizon - h * .14}" width="${w}" height="${h * .14}" fill="${shade(c.accent, 30)}"/>`;
+    s += `<path d="M0 ${horizon} Q ${w * .3} ${horizon - 18 - v * 6} ${w * .55} ${horizon - 4} T ${w} ${horizon - 10} V ${h} H0Z" fill="${c.floor}"/>`;
+  } else {
+    // 窗光：一个平涂的平行四边形
+    const wx = [0.56, 0.18, 0.66, 0.4][angle] * w + v * 8;
+    s += `<path d="M${wx} ${h * .08} h${w * .26} l${-w * .1} ${horizon - h * .1} h${-w * .26}Z" fill="${shade(c.wall, 12)}"/>`;
+    s += `<rect y="${horizon}" width="${w}" height="${h - horizon}" fill="${c.floor}"/>`;
+    if (sc.material === '亚麻布') s += `<path d="M0 ${horizon + 10} Q ${w * .5} ${horizon - 6} ${w} ${horizon + 14} V${h} H0Z" fill="${shade(c.floor, 10)}"/>`;
+  }
+  // 道具：花瓶 / 石块 / 书，按机位换位置
+  const px = [0.14, 0.78, 0.1, 0.5][angle] * w, py = horizon;
+  if (angle === 3) s += `<rect x="${w * .3}" y="${py - h * .2}" width="${w * .4}" height="${h * .2}" fill="${shade(c.prop, -8)}"/>`;
+  s += `<path d="M${px - 9} ${py} q -4 -26 6 -36 q -6 -10 3 -14 h4 q 9 4 3 14 q 10 10 6 36Z" fill="${c.prop}"/>`;
+  s += `<path d="M${px + 2} ${py - 50} q 8 -16 18 -20 M${px + 2} ${py - 50} q -6 -14 -2 -24" stroke="${c.accent}" stroke-width="1.6" fill="none"/>`;
+  return s;
+}
+const sceneSvg = (sc, angle) => svg(240, 240, sceneBg(sc, angle), 'pic');
+
+// 模特局部特写：neck 颈肩 / wrist 手腕 / ear 耳侧
+function hairFor(m, w, h) {
+  const st = m.hairStyle || 'long', c = m.hair;
+  if (st === 'long') return `<path d="M${w * .2} 0 C ${w * .22} ${h * .3}, ${w * .14} ${h * .5}, ${w * .06} ${h * .62} L 0 ${h * .6} V0Z M${w * .8} 0 C ${w * .78} ${h * .3}, ${w * .86} ${h * .5}, ${w * .94} ${h * .62} L ${w} ${h * .6} V0Z" fill="${c}"/>`;
+  if (st === 'curly') return `<path d="M${w * .24} 0 q -${w * .06} ${h * .12} 0 ${h * .2} q -${w * .08} ${h * .1} -${w * .02} ${h * .22} q -${w * .1} ${h * .08} -${w * .14} ${h * .14} L 0 ${h * .5} V0Z M${w * .76} 0 q ${w * .06} ${h * .12} 0 ${h * .2} q ${w * .08} ${h * .1} ${w * .02} ${h * .22} q ${w * .1} ${h * .08} ${w * .14} ${h * .14} L ${w} ${h * .5} V0Z" fill="${c}"/>`;
+  if (st === 'side') return `<path d="M${w * .66} 0 C ${w * .7} ${h * .2}, ${w * .62} ${h * .42}, ${w * .7} ${h * .6} C ${w * .78} ${h * .5}, ${w * .82} ${h * .2}, ${w * .8} 0Z" fill="${c}"/>`;
+  if (st === 'bun') return `<path d="M${w * .36} 0 h ${w * .28} c -${w * .02} ${h * .05}, -${w * .24} ${h * .05}, -${w * .28} 0Z" fill="${c}"/>`;
+  return `<path d="M${w * .37} 0 h ${w * .26} c 0 ${h * .08}, -${w * .04} ${h * .1}, -${w * .13} ${h * .1} c -${w * .09} 0, -${w * .13} -${h * .02}, -${w * .13} -${h * .1}Z" fill="${c}"/>`;
+}
+function modelCrop(m, kind, w = 240, h = 240) {
+  if (kind === 'neck') return hairFor(m, w, h) + `
+    <path d="M${w * .38} 0 C ${w * .39} ${h * .25}, ${w * .36} ${h * .36}, ${w * .2} ${h * .48} L ${w * .02} ${h * .6} V ${h} H ${w * .98} V ${h * .6} L ${w * .8} ${h * .48} C ${w * .64} ${h * .36}, ${w * .61} ${h * .25}, ${w * .62} 0Z" fill="${m.skin}"/>
+    <path d="M${w * .3} ${h * .5} q ${w * .2} ${h * .05} ${w * .4} 0" stroke="${shade(m.skin, -22)}" stroke-width="1.4" fill="none"/>
+    <path d="M0 ${h * .64} L ${w * .24} ${h * .55} Q ${w * .5} ${h * .86} ${w * .76} ${h * .55} L ${w} ${h * .64} V ${h} H0Z" fill="${m.outfit}"/>`;
+  if (kind === 'wrist') return `
+    <path d="M0 ${h * .62} C ${w * .3} ${h * .58}, ${w * .5} ${h * .56}, ${w * .66} ${h * .5} C ${w * .78} ${h * .45}, ${w * .92} ${h * .46}, ${w} ${h * .5} V ${h * .72} C ${w * .9} ${h * .74}, ${w * .76} ${h * .7}, ${w * .66} ${h * .72} C ${w * .5} ${h * .76}, ${w * .3} ${h * .8}, 0 ${h * .84}Z" fill="${m.skin}"/>
+    <path d="M0 ${h * .6} L ${w * .26} ${h * .58} L ${w * .3} ${h * .82} L 0 ${h * .86}Z" fill="${m.outfit}"/>`;
+  // 耳侧：脸颊轮廓 + 头发 + 清楚的耳廓，耳坠挂在耳垂（约 x .6, y .56）
+  return `
+    <path d="M0 0 H ${w * .72} C ${w * .7} ${h * .3}, ${w * .74} ${h * .62}, ${w * .62} ${h * .86} C ${w * .56} ${h * .96}, ${w * .5} ${h}, ${w * .46} ${h} H 0Z" fill="${m.skin}"/>
+    <path d="M${w * .26} 0 C ${w * .5} ${h * .02}, ${w * .9} ${h * .06}, ${w} ${h * .2} V ${h * .9} C ${w * .9} ${h * .7}, ${w * .8} ${h * .42}, ${w * .72} ${h * .3} C ${w * .66} ${h * .16}, ${w * .5} ${h * .08}, ${w * .26} 0Z" fill="${m.hair}"/>
+    <path d="M${w * .6} ${h * .3} C ${w * .7} ${h * .26}, ${w * .74} ${h * .4}, ${w * .68} ${h * .48} C ${w * .65} ${h * .53}, ${w * .63} ${h * .57}, ${w * .6} ${h * .56} C ${w * .56} ${h * .55}, ${w * .56} ${h * .46}, ${w * .58} ${h * .4}Z" fill="${shade(m.skin, -10)}" stroke="${shade(m.skin, -30)}" stroke-width="1"/>
+    <path d="M${w * .62} ${h * .35} C ${w * .67} ${h * .35}, ${w * .67} ${h * .44}, ${w * .63} ${h * .47}" stroke="${shade(m.skin, -34)}" stroke-width="1.2" fill="none"/>`;
+}
+const CROP = { necklace: 'neck', bracelet: 'wrist', earring: 'ear' };
+const PIECE_AT = {
+  necklace: [120, 100, 1.05], bracelet: [160, 148, .78], earring: [144, 148, .95],
+};
+// AI 试戴图：场景机位 + 模特特写 + 同一份饰品图形
+function aiShot(sh) {
+  const sc = sh.sceneSnap || byId(S.scenes, sh.sceneId), m = sh.modelSnap || byId(S.models, sh.modelId), pc = sh.pieceSnap || byId(S.pieces, sh.pieceId);
+  const [x, y, k] = PIECE_AT[pc.cat];
+  const body = sceneBg(sc, sh.angle) + modelCrop(m, CROP[pc.cat]) + `<g>${pieceBody(pc, x, y, k, pc.cat === 'bracelet' ? 'wrist' : 'front', sh.pendantScale || 1)}</g>`;
+  return svg(240, sh.ratio === '3:4' ? 320 : 240, sh.ratio === '3:4' ? `<g transform="scale(1 1.333)">${body}</g>` : body, 'pic');
+}
+function modelPortrait(m) {
+  return svg(240, 240, `<rect width="240" height="240" fill="#eeece7"/>${modelCrop(m, 'neck')}`, 'pic');
+}
+
+// 外壳：石灰外框（侧栏 + 顶栏）+ 白色纸面；简单的 hash 路由
+const $ = (sel, el = document) => el.querySelector(sel);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const I = {
+  studio: '<path d="M3 6.5 8 3l5 3.5V13H3z M6.5 13V9.5h3V13" />',
+  assets: '<path d="M3 3h4v4H3z M9 3h4v4H9z M3 9h4v4H3z M9 9h4v4H9z" />',
+  search: '<circle cx="7" cy="7" r="4.2"/><path d="m10.2 10.2 3 3"/>',
+  spark: '<path d="M8 2.5v3M8 10.5v3M2.5 8h3M10.5 8h3M4.3 4.3l1.8 1.8M9.9 9.9l1.8 1.8M11.7 4.3 9.9 6.1M6.1 9.9l-1.8 1.8"/>',
+  plus: '<path d="M8 3v10M3 8h10"/>',
+  close: '<path d="m4 4 8 8M12 4l-8 8"/>',
+  back: '<path d="M9.5 3.5 5 8l4.5 4.5"/>',
+  down: '<path d="M8 3v7M5 7.5 8 10.5l3-3M3.5 13h9"/>',
+  menu: '<path d="M3 5h10M3 8h10M3 11h10"/>',
+  check: '<path d="m3.5 8.5 3 3 6-7"/>',
+  swap: '<path d="M4 5.5h8l-2.5-2.5M12 10.5H4l2.5 2.5"/>',
+};
+const icon = (n, s = 16) => `<svg width="${s}" height="${s}" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[n]}</svg>`;
+const mark = `<svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><rect width="22" height="22" rx="6" fill="#1b6c80"/><path d="M5 8 Q11 17 17 8" stroke="#fff" stroke-width="1.4" fill="none"/><circle cx="11" cy="13.6" r="2.2" fill="#fff"/></svg>`;
+
+let route = { name: 'home' };
+function go(name, params = {}) { route = { name, ...params }; render(); $('.sheet') && ($('.sheet').scrollTop = 0); }
+function toast(msg) {
+  const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg;
+  document.body.appendChild(t); setTimeout(() => t.remove(), 2600);
+}
+function quotaBlock() {
+  const u = used(), l = left(), low = l <= QUOTA_TOTAL * .2;
+  return `<div class="quota ${low ? 'low' : ''}">
+    <div style="display:flex;justify-content:space-between"><span>生成额度</span><span class="num">${u} / ${QUOTA_TOTAL} 张</span></div>
+    <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="${QUOTA_TOTAL}" aria-valuenow="${u}"><i style="width:${u / QUOTA_TOTAL * 100}%"></i></div>
+    <span class="small muted">${l === 0 ? '额度已用完，联系运营加额度' : low ? `只剩 ${l} 张，用完需联系运营` : `实验期免费，还可生成 ${l} 张`}</span></div>`;
+}
+function shell(content) {
+  const nav = (n, label, ic, count) => `<button class="nav-item" ${route.name === n || (n === 'home' && ['studio', 'flow'].includes(route.name)) ? 'aria-current="page"' : ''} onclick="go('${n}')">${icon(ic)}<span>${label}</span>${count != null ? `<span class="count num">${count}</span>` : ''}</button>`;
+  return `<div class="shell">
+    <aside class="sidebar" aria-label="主导航">
+      <div class="brand">${mark}<span>云工作室</span></div>
+      ${nav('home', '我的工作室', 'studio', S.studios.length || null)}
+      ${nav('assets', '总资产', 'assets')}
+      <div class="nav-group">最近的作品</div>
+      ${S.pieces.slice(-4).reverse().map(p => `<button class="nav-item" onclick="openPiece('${p.id}')"><span class="mini-thumb">${stdView(p, 'front', '#ffffff')}</span><span>${esc(p.name)}</span><span class="count">${CAT[p.cat]}</span></button>`).join('') || '<p class="small muted" style="padding:0 10px">还没有作品</p>'}
+      <div class="side-foot">${quotaBlock()}
+        <div class="account"><span class="avatar">店</span><span>${esc(S.user.shop)}</span><span class="small muted">${S.user.isNew ? '新用户' : '示例账号'}</span></div>
+        <button class="link" onclick="${S.user.isNew ? 'loadDemo()' : 'resetUser()'}">${S.user.isNew ? '载入示例账号' : '切换到新用户'}</button></div>
+    </aside>
+    <header class="topbar">
+      <button class="icon-btn phone-only" aria-label="打开导航" onclick="document.body.classList.toggle('nav-open')">${icon('menu')}</button>
+      <label class="search">${icon('search', 14)}<input placeholder="搜索作品、工作室、场景" aria-label="搜索"></label>
+      <button class="btn agent-btn" onclick="Agent.toggle()">${icon('spark')}<span>助手</span></button>
+    </header>
+    <main class="sheet" id="sheet">${content}</main>
+  </div>`;
+}
+function openPiece(id) {
+  const st = S.studios.find(s => S.shots.some(x => x.studioId === s.id && x.pieceId === id));
+  st ? go('studio', { id: st.id, pieceId: id }) : go('flow', { pieceId: id, step: 'pick' });
+}
+function render() {
+  const screens = { home: Home, flow: Flow, studio: Studio, assets: Assets };
+  $('#app').innerHTML = shell((screens[route.name] || Home)());
+  document.body.classList.remove('nav-open');
+  Agent.mount();
+}
+window.addEventListener('DOMContentLoaded', render);
+
+// 首页「我的工作室」：这件新作品该进哪间？
+function Home() {
+  const unshot = S.pieces.filter(p => !S.shots.some(x => x.pieceId === p.id));
+  const head = `<div class="title-row"><h1>我的工作室</h1><div class="actions">
+    <button class="btn primary" onclick="go('flow',{step:'upload'})">${icon('plus')}上新一件作品</button></div></div>`;
+  if (!S.studios.length) {
+    return `<div class="page">${head}
+      <p class="subline">还没有工作室。先放进一件作品的三张实拍，从它开始组建第一间。</p>
+      <section class="first-run" aria-label="第一件作品">
+        <div class="drop-row">${['front', 'side', 'back'].map(v => `
+          <button class="drop" onclick="go('flow',{step:'upload'})"><span class="drop-guide">${guide(v)}</span>
+          <span class="drop-label">${VIEW_LABEL[v]}实拍</span><span class="small muted">拖入或点击选择</span></button>`).join('')}
+        </div>
+        <div class="first-run-side">
+          <h2 class="section-title">从一件作品到一套上架图</h2>
+          <ol class="path">
+            <li><b>三张实拍</b><span>正面、侧面、反面，再填主尺寸。系统只抠图、统一背景，饰品不改。</span></li>
+            <li><b>聊气质</b><span>四个点选问题，得到一张设定卡：背景和模特。</span></li>
+            <li><b>组建工作室</b><span>按气质生成 4 张场景，挑一位模特。以后调性相近的作品直接复用。</span></li>
+            <li><b>拍一套</b><span>4 张试戴图 + 实物图 + 尺寸图，逐张核对珠序后下载。</span></li>
+          </ol>
+          <p class="small muted">${unshot.length ? `已上传 ${unshot.length} 件作品，还没拍。` : '实验期免费，每人 200 张生成额度。'}</p>
+        </div>
+      </section>
+      ${sampleGallery()}
+      <section class="howto" aria-label="实拍示例"><h2 class="section-title">这样拍就够了</h2>
+        <p class="muted">桌面、窗边自然光，手机随手拍。整条饰品都在画面里，链扣和吊坠看得清。</p>
+        <div class="howto-row">${['front', 'side', 'back'].map(v => `<figure>${rawPhoto(SAMPLE_PIECES[0], v)}<figcaption class="small muted">${VIEW_LABEL[v]}：${{ front: '平放，吊坠朝上', side: '立起来，看得到厚度', back: '翻面，拍到链扣' }[v]}</figcaption></figure>`).join('')}</div></section></div>`;
+  }
+  const rows = S.studios.map(st => {
+    const sc = byId(S.scenes, st.sceneId), m = byId(S.models, st.modelId);
+    const shots = S.shots.filter(x => x.studioId === st.id);
+    const pieceIds = [...new Set(shots.map(x => x.pieceId))];
+    const missing = !m;
+    return `<article class="studio-row">
+      <button class="studio-scenes" onclick="go('studio',{id:'${st.id}'})" aria-label="进入 ${esc(st.name)}">
+        ${[0, 1, 2, 3].map(a => sceneSvg(sc, a)).join('')}</button>
+      <div class="studio-meta">
+        <h2 class="section-title"><a href="#" onclick="go('studio',{id:'${st.id}'});return false">${esc(st.name)}</a></h2>
+        <p class="muted">${esc(sc.material)} · ${esc(sc.tone)} · ${esc(sc.atmo)}</p>
+        <div class="who">${missing ? '<span class="pill neg">缺模特</span>' : `<span class="model-thumb">${modelPortrait(m)}</span><span>${esc(m.name)}</span><span class="muted small">${esc(m.source === 'self' ? '本人模特' : m.desc)}</span>`}</div>
+      </div>
+      <div class="studio-pieces">
+        <span class="small muted">在这里拍过 ${pieceIds.length} 件 · ${shots.length} 张成片</span>
+        <div class="piece-chips">${pieceIds.map(id => { const p = byId(S.pieces, id); return `<button class="piece-chip" onclick="go('studio',{id:'${st.id}',pieceId:'${id}'})" title="${esc(p.name)}">${stdView(p, 'front', '#fff')}<span>${esc(p.name)}</span></button>`; }).join('') || '<span class="small muted">还没拍过</span>'}</div>
+      </div>
+      <div class="studio-act"><button class="btn" onclick="go('studio',{id:'${st.id}'})">进入</button></div>
+    </article>`;
+  }).join('');
+  const nPieces = S.pieces.length;
+  return `<div class="page">${head}
+    <p class="subline num">${S.studios.length} 间工作室 · ${nPieces} 件作品${unshot.length ? `，其中 <b>${unshot.map(p => esc(p.name)).join('、')}</b> 还没拍` : ''}</p>
+    ${unshot.length ? `<div class="waiting">${unshot.map(p => `<div class="waiting-item"><span class="mini-thumb">${stdView(p, 'front', '#fff')}</span><span><b>${esc(p.name)}</b> <span class="muted">${CAT[p.cat]} · 已确认三视图</span></span><button class="btn primary" onclick="go('flow',{pieceId:'${p.id}',step:'pick'})">选工作室</button></div>`).join('')}</div>` : ''}
+    <div class="studio-list">${rows}</div></div>`;
+}
+// 拖入槽里的拍摄引导：一个虚线的饰品轮廓
+function guide(v) {
+  const rx = v === 'side' ? 18 : 52;
+  return svg(120, 90, `<path d="M${60 - rx} 20 Q 60 ${v === 'back' ? 70 : 82} ${60 + rx} 20" fill="none" stroke="#b3b5b8" stroke-width="1.5" stroke-dasharray="3 4"/>${v === 'back' ? '<rect x="55" y="16" width="10" height="6" rx="2" fill="none" stroke="#b3b5b8" stroke-dasharray="2 2"/>' : '<circle cx="60" cy="62" r="6" fill="none" stroke="#b3b5b8" stroke-dasharray="2 2"/>'}`);
+}
+
+// 成片示例：只做展示，不进总资产、不扣额度
+const SAMPLES = [
+  { key: 'necklace', piece: 0, studio: '亚麻窗边', material: '亚麻布', light: 'cool', model: 'm1', atmo: '利落安静' },
+  { key: 'bracelet', piece: 2, studio: '旧木书桌', material: '旧木桌', light: 'warm', model: 'm3', atmo: '松弛自然' },
+  { key: 'earring', piece: 3, studio: '海边清晨', material: '海边礁石', light: 'soft', model: 'm2', atmo: '开阔透气' },
+];
+let sampleKey = 'necklace';
+function sampleGallery() {
+  const smp = SAMPLES.find(x => x.key === sampleKey), pc = SAMPLE_PIECES[smp.piece];
+  const sc = { material: smp.material, palette: SCENE_PALETTES[smp.material], light: smp.light, variant: 0 };
+  const m = PRESET_MODELS.find(x => x.id === smp.model);
+  const shots = [0, 1, 2, 3].map(a => ({ sceneSnap: sc, modelSnap: m, pieceSnap: pc, angle: a, ratio: '1:1', pendantScale: 1 }));
+  return `<section class="samples" aria-label="成片示例">
+    <div class="samples-head"><h2 class="section-title">成片示例</h2>
+      <div class="seg" role="group" aria-label="示例品类">${SAMPLES.map(x => `<button aria-pressed="${x.key === sampleKey}" onclick="sampleKey='${x.key}';render()">${CAT[x.key]}</button>`).join('')}</div></div>
+    <p class="muted">示例作品「${esc(pc.name)}」在「${esc(smp.studio)}」拍的一套：${esc(sc.palette.tone)} · ${esc(smp.atmo)} · 模特${esc(m.name)}。饰品和实拍逐颗一致。</p>
+    <div class="contact sample-sheet">
+      ${shots.map((x, i) => `<figure class="frame ai"><div class="shot">${aiShot(x)}<span class="ai-mark">AI 生成</span><span class="sample-mark">示例</span></div>
+        <div class="bead-compare">${beadCompare(pc)}</div><figcaption><span class="small muted">试戴 ${i + 1} · ${ANGLES[i]}</span></figcaption></figure>`).join('')}
+      <figure class="frame">${stdView(pc, 'front', '#fff')}<figcaption><span class="small muted">实物图 · 不经 AI</span></figcaption></figure>
+      <figure class="frame">${sizeChart(pc)}<figcaption><span class="small muted">尺寸标注图</span></figcaption></figure>
+    </div></section>`;
+}
+
+// 上新：上传 → 三视图 → 复用 / 新建 →（气质 → 设定卡 → 场景 → 模特 → 组建）
+const F = { draft: null, answers: {}, other: {}, card: null, scene: null, kept: [true, true, true, true], modelId: null, name: '' };
+const STEPS_NEW = [['upload', '三张实拍与尺寸'], ['views', '确认标准三视图'], ['pick', '选工作室'], ['ask', '聊作品气质'], ['card', '确认设定卡'], ['scenes', '生成场景'], ['model', '选模特'], ['build', '组建工作室']];
+
+function Flow() {
+  const step = route.step || 'upload';
+  const pc = route.pieceId ? byId(S.pieces, route.pieceId) : F.draft;
+  const idx = STEPS_NEW.findIndex(s => s[0] === step);
+  const steps = STEPS_NEW.map(([k, label], i) => `<li class="${i < idx ? 'done' : i === idx ? 'now' : ''}" ${i === idx ? 'aria-current="step"' : ''}><button class="step-jump" ${pc && pc.id ? '' : 'disabled'} onclick="jumpStep('${pc && pc.id}','${k}')">${i < idx ? icon('check', 14) : '<i></i>'}<span>${label}</span></button></li>`).join('');
+  const body = { upload: StepUpload, views: StepViews, pick: StepPick, ask: StepAsk, card: StepCard, scenes: StepScenes, model: StepModel, build: StepBuild }[step](pc);
+  return `<div class="builder">
+    <div class="builder-bar"><button class="icon-btn" aria-label="返回我的工作室" onclick="go('home')">${icon('back')}</button>
+      <h1>${pc && pc.name ? esc(pc.name) : '上新一件作品'}</h1>${pc && pc.cat ? `<span class="pill">${CAT[pc.cat]}</span>` : ''}</div>
+    <div class="builder-body">
+      <aside class="builder-side">
+        ${pc && pc.id ? `<div class="side-piece">${stdView(pc, 'front', '#fff')}<div><b>${esc(pc.name)}</b><p class="small muted mono">${SIZE_FIELDS[pc.cat][0][0]} ${pc.sizes[0]} cm</p></div></div>` : ''}
+        <ol class="steps">${steps}</ol>${pc && pc.id ? '<p class="small muted">原型演示：可点任一步骤直接查看</p>' : ''}
+      </aside>
+      <section class="canvas">${body}</section>
+    </div></div>`;
+}
+
+// 上传：先选品类，再放三张实拍（原型里点击即放入示例照片）
+function StepUpload() {
+  const d = F.draft || (F.draft = { cat: null, shots: {}, sizes: ['', ''], name: '' });
+  const sample = d.cat ? nextSample(d.cat) : null;
+  const filled = ['front', 'side', 'back'].filter(v => d.shots[v]).length;
+  const fields = d.cat ? SIZE_FIELDS[d.cat] : [];
+  const missing = [];
+  if (!d.cat) missing.push('品类');
+  ['front', 'side', 'back'].forEach(v => { if (!d.shots[v]) missing.push(VIEW_LABEL[v] + '实拍'); });
+  if (d.cat && !d.sizes[0]) missing.push(fields[0][0]);
+  return `<div class="step">
+    <h2 class="step-title">放进三张实拍</h2>
+    <p class="muted">饰品只从这三张照片里来。手机随手拍就行，系统会抠图、统一背景。</p>
+    <div class="field" style="margin-top:20px"><span>品类</span><div class="seg" role="group" aria-label="品类">
+      ${Object.entries(CAT).map(([k, v]) => `<button aria-pressed="${d.cat === k}" onclick="F.draft.cat='${k}';F.draft.shots={};F.draft.sizes=['',''];render()">${v}</button>`).join('')}</div></div>
+    <div class="drop-row" style="margin-top:20px">${['front', 'side', 'back'].map(v => d.shots[v] ? `
+      <figure class="drop filled">${rawPhoto(sample, v)}<figcaption><span>${VIEW_LABEL[v]} · IMG_${2201 + ['front', 'side', 'back'].indexOf(v)}.jpg</span><button class="link" onclick="delete F.draft.shots['${v}'];render()">换一张</button></figcaption></figure>` : `
+      <button class="drop" ${d.cat ? '' : 'disabled'} onclick="F.draft.shots['${v}']=1;render()"><span class="drop-guide">${guide(v)}</span><span class="drop-label">${VIEW_LABEL[v]}实拍</span><span class="small muted">${d.cat ? '拖入或点击选择' : '先选品类'}</span></button>`).join('')}</div>
+    <p class="small muted" style="margin-top:8px">JPG / PNG / HEIC / WebP，短边不小于 1000 px，单张不超过 20 MB</p>
+    ${d.cat ? `<div class="size-row">
+      ${fields.map(([label, req], i) => `<label class="field"><span>${label}${req ? '' : ' <span class="muted small">选填</span>'}</span>
+        <span class="input-unit"><input class="input mono" inputmode="decimal" value="${esc(d.sizes[i])}" oninput="F.draft.sizes[${i}]=this.value;refreshUploadHint()" placeholder="${req ? '必填' : ''}"><i>cm</i></span></label>`).join('')}
+      <figure class="tape">${svg(160, 70, `<rect x="6" y="26" width="148" height="18" rx="3" fill="#f1e7c7" stroke="#c9b26a"/>${Array.from({ length: 15 }, (_, i) => `<path d="M${12 + i * 10} 26 v${i % 5 ? 6 : 10}" stroke="#8a7a3d"/>`).join('')}<circle cx="40" cy="35" r="14" fill="none" stroke="#9aa0a6" stroke-dasharray="3 3"/>`)}<figcaption class="small muted">软尺贴着饰品量，${fields[0][0]}量整条展开长度</figcaption></figure>
+    </div>` : ''}
+    <div class="step-foot"><span id="upload-hint" class="small ${missing.length ? 'muted' : ''}">${missing.length ? '还缺：' + missing.join('、') : `已齐：3 张实拍 · ${fields[0] ? fields[0][0] : ''} ${esc(d.sizes[0])} cm`}</span>
+      <button class="btn primary" ${missing.length ? 'disabled' : ''} onclick="submitUpload()">整理三视图</button></div>
+  </div>`;
+}
+function refreshUploadHint() { const pos = document.activeElement && document.activeElement.selectionStart; const i = [...document.querySelectorAll('.size-row input')].indexOf(document.activeElement); render(); if (i >= 0) { const el = document.querySelectorAll('.size-row input')[i]; el.focus(); el.setSelectionRange(pos, pos); } }
+function nextSample(cat) {
+  const used = S.pieces.map(p => p.name);
+  return SAMPLE_PIECES.find(p => p.cat === cat && !used.includes(p.name)) || SAMPLE_PIECES.find(p => p.cat === cat);
+}
+function submitUpload() {
+  const d = F.draft, sample = nextSample(d.cat);
+  const pc = { ...sample, id: uid('p'), sizes: [d.sizes[0], d.sizes[1] || sample.sizes[1]], confirmed: false, createdAt: new Date() };
+  S.pieces.push(pc); F.draft = null;
+  go('flow', { pieceId: pc.id, step: 'views' });
+}
+function StepViews(pc) {
+  return `<div class="step">
+    <h2 class="step-title">这是整理好的标准三视图</h2>
+    <p class="muted">只做了抠图和统一背景。左边是你的实拍，右边是整理结果，饰品本身一个像素都没动。</p>
+    <div class="views-compare">${['front', 'side', 'back'].map(v => `<div class="vc"><figure>${rawPhoto(pc, v)}<figcaption class="small muted">${VIEW_LABEL[v]}实拍</figcaption></figure><span class="vc-arrow">→</span><figure>${stdView(pc, v)}<figcaption class="small">${VIEW_LABEL[v]}</figcaption></figure></div>`).join('')}</div>
+    <div class="bead-check"><span class="small muted">珠序</span>${beadStrip(pc)}<span class="small">${pc.beads.length} 颗珠子 + 吊坠，三视图与实拍一致</span></div>
+    <label class="field" style="max-width:320px;margin-top:20px"><span>给作品起个名字</span><input class="input" value="${esc(pc.name)}" oninput="byId(S.pieces,'${pc.id}').name=this.value"></label>
+    <div class="step-foot"><button class="btn" onclick="toast('已重新整理边缘（示例）')">边缘不理想，重新整理</button>
+      <button class="btn primary" onclick="byId(S.pieces,'${pc.id}').confirmed=true;go('flow',{pieceId:'${pc.id}',step:'pick'})">确认，存进总资产</button></div>
+  </div>`;
+}
+function StepPick(pc) {
+  const list = S.studios.map(st => {
+    const sc = byId(S.scenes, st.sceneId), m = byId(S.models, st.modelId);
+    const shotNames = [...new Set(S.shots.filter(x => x.studioId === st.id).map(x => byId(S.pieces, x.pieceId).name))];
+    return `<button class="pick-studio" onclick="reuseStudio('${pc.id}','${st.id}')">
+      <span class="pick-scene">${sceneSvg(sc, 0)}</span>
+      <span class="pick-meta"><b>${esc(st.name)}</b><span class="small muted">${esc(sc.material)} · ${m ? esc(m.name) : '缺模特'} · 拍过 ${shotNames.length ? shotNames.map(esc).join('、') : '—'}</span></span>
+      <span class="btn">用它拍</span></button>`;
+  }).join('');
+  return `<div class="step">
+    <h2 class="step-title">「${esc(pc.name)}」进哪间工作室？</h2>
+    <p class="muted">调性和已有工作室相近就复用，直接拍；风格不同就新建一间。</p>
+    <div class="pick-grid">
+      <section class="pick-col"><h3 class="section-title">复用已有工作室</h3>
+        ${list || '<p class="empty-line">还没有工作室。第一件作品先新建一间。</p>'}</section>
+      <section class="pick-col new"><h3 class="section-title">新建一间</h3>
+        <p class="muted">四个点选问题读懂它的气质，再按气质生成场景、挑模特。</p>
+        <button class="btn primary lg" onclick="startNew('${pc.id}')">按气质新建</button>
+        <p class="small muted">新建会生成 4 张场景图，消耗 4 张额度</p></section>
+    </div>
+    <div class="reason"><span class="small muted">选这条路的原因（选填，帮我们改进）</span>
+      <div class="seg">${['调性相近', '风格不同', '其他'].map(r => `<button aria-pressed="${F.reason === r}" onclick="F.reason='${r}';render()">${r}</button>`).join('')}</div></div>
+  </div>`;
+}
+function reuseStudio(pieceId, studioId) {
+  S.matchLog = (S.matchLog || []).concat({ pieceId, path: '复用', reason: F.reason || null });
+  go('studio', { id: studioId, pieceId });
+  toast('已选中这间工作室，本次拍「' + byId(S.pieces, pieceId).name + '」');
+}
+function startNew(pieceId) {
+  S.matchLog = (S.matchLog || []).concat({ pieceId, path: '新建', reason: F.reason || null });
+  Object.assign(F, { answers: {}, other: {}, card: null, scene: null, kept: [true, true, true, true], modelId: null, name: '' });
+  go('flow', { pieceId, step: 'ask' });
+}
+
+// 原型演示：跳到任一步，缺的前置数据用默认值补齐（不扣额度）
+function jumpStep(pieceId, step) {
+  const order = STEPS_NEW.map(s => s[0]), at = order.indexOf(step);
+  if (step === 'upload') { F.draft = null; return go('flow', { step: 'upload' }); }
+  if (at >= order.indexOf('card') && !F.card) { QUESTIONS.forEach(q => { F.answers[q.id] = F.answers[q.id] || q.opts[0]; }); makeCard(); }
+  if (at >= order.indexOf('scenes') && !F.scene) { const c = F.card; F.scene = { material: c.material, palette: SCENE_PALETTES[c.material], light: LIGHT_SHIFT[c.light], tone: c.tone, atmo: c.atmo, variant: 0, version: 1 }; F.kept = [true, true, true, true]; }
+  if (at >= order.indexOf('build') && !F.modelId) F.modelId = 'm1';
+  go('flow', { pieceId, step });
+}
+
+// 新建工作室的后半段
+function StepAsk(pc) {
+  const done = QUESTIONS.filter(q => F.answers[q.id]).length;
+  return `<div class="step">
+    <h2 class="step-title">「${esc(pc.name)}」是什么气质？</h2>
+    <p class="muted">${QUESTIONS.length} 个问题，点选就行。也可以放一张店铺参考图帮助理解（选填）。</p>
+    <div class="qa">${QUESTIONS.map(q => `<fieldset class="q"><legend>${q.q}</legend><div class="opts">
+      ${q.opts.map(o => `<button class="opt" aria-pressed="${F.answers[q.id] === o}" onclick="F.answers['${q.id}']='${o}';render()">${o}</button>`).join('')}
+      <button class="opt" aria-pressed="${F.answers[q.id] === '其他'}" onclick="F.answers['${q.id}']='其他';render()">其他</button>
+      ${F.answers[q.id] === '其他' ? `<input class="input other" placeholder="说说你的想法" value="${esc(F.other[q.id] || '')}" oninput="F.other['${q.id}']=this.value">` : ''}
+    </div></fieldset>`).join('')}</div>
+    <div class="ref-row"><span class="small muted">店铺参考（选填）</span>
+      ${S.refs.length ? S.refs.map(r => `<span class="pill">${esc(r.name)}</span>`).join('') : ''}
+      <button class="btn ghost" onclick="addRef()">${icon('plus', 14)}上传参考图</button></div>
+    <div class="step-foot"><span class="small muted num">已答 ${done} / ${QUESTIONS.length}</span>
+      <button class="btn primary" ${done < QUESTIONS.length ? 'disabled' : ''} onclick="makeCard();go('flow',{pieceId:'${pc.id}',step:'card'})">生成设定卡</button></div>
+  </div>`;
+}
+function addRef() { S.refs.push({ id: uid('r'), name: '店铺首页截图 ' + (S.refs.length + 1) }); toast('参考图已存进总资产，只用于理解气质'); render(); }
+function pickAns(id, fallback) { const a = F.answers[id]; return a === '其他' ? (F.other[id] || fallback) : a; }
+function makeCard() {
+  const mood = pickAns('mood', '清冷'), mat = pickAns('material', '亚麻布'), light = pickAns('light', '清晨窗光');
+  const mm = MOOD_MODEL[mood] || MOOD_MODEL['清冷'];
+  const pal = SCENE_PALETTES[mat] || SCENE_PALETTES['亚麻布'];
+  F.card = {
+    atmo: (WEAR_ATMO[pickAns('wear', '日常')] || '松弛自然'), tone: pal.tone, material: SCENE_PALETTES[mat] ? mat : '亚麻布', light,
+    temper: mm.temper, outfit: mm.outfit, pose: mm.pose, mood,
+  };
+}
+function StepCard(pc) {
+  const c = F.card;
+  const row = (k, label, opts) => `<div class="kv"><span class="muted">${label}</span>
+    <select class="kv-select" onchange="F.card['${k}']=this.value" aria-label="${label}">${[...new Set([c[k], ...opts])].map(o => `<option ${o === c[k] ? 'selected' : ''}>${o}</option>`).join('')}</select></div>`;
+  return `<div class="step">
+    <h2 class="step-title">设定卡</h2>
+    <p class="muted">按你的回答整理出来的。哪一项不对就直接改，没问题就点「就这样」。</p>
+    <div class="setcard">
+      <section><h3 class="section-title">背景</h3>
+        ${row('atmo', '氛围', ['利落安静', '柔和亲近', '开阔透气', '松弛自然'])}
+        ${row('tone', '色调', Object.values(SCENE_PALETTES).map(p => p.tone))}
+        ${row('material', '材质', Object.keys(SCENE_PALETTES))}
+        ${row('light', '光线', Object.keys(LIGHT_SHIFT))}</section>
+      <section><h3 class="section-title">模特</h3>
+        ${row('temper', '气质', Object.values(MOOD_MODEL).map(m => m.temper))}
+        ${row('outfit', '穿搭', Object.values(MOOD_MODEL).map(m => m.outfit))}
+        ${row('pose', '动作', Object.values(MOOD_MODEL).map(m => m.pose))}</section>
+    </div>
+    <div class="step-foot"><button class="btn" onclick="go('flow',{pieceId:'${pc.id}',step:'ask'})">重新回答</button>
+      <button class="btn primary" onclick="genScene('${pc.id}')">就这样，生成场景 · 4 张</button></div>
+  </div>`;
+}
+function genScene(pieceId, regen) {
+  if (!spend(4, regen ? '重新生成场景' : '生成场景')) return toast('额度不够生成 4 张场景图');
+  const c = F.card;
+  F.scene = { id: null, material: c.material, palette: SCENE_PALETTES[c.material], light: LIGHT_SHIFT[c.light], tone: c.tone, atmo: c.atmo, variant: regen ? ((F.scene && F.scene.variant) || 0) + 1 : 0, version: 1 };
+  F.kept = [true, true, true, true];
+  go('flow', { pieceId, step: 'scenes' });
+}
+function StepScenes(pc) {
+  const sc = F.scene, keptN = F.kept.filter(Boolean).length;
+  return `<div class="step">
+    <h2 class="step-title">场景：${esc(sc.material)} · ${esc(sc.atmo)}</h2>
+    <p class="muted">同一个场景的四个机位。拍摄时会轮流用到它们。不想要的可以去掉，至少留 1 张。</p>
+    <div class="scene-grid">${ANGLES.map((a, i) => `<figure class="scene-cell ${F.kept[i] ? '' : 'off'}">${sceneSvg(sc, i)}
+      <figcaption><span>${a}</span><button class="link" ${keptN === 1 && F.kept[i] ? 'disabled' : ''} onclick="F.kept[${i}]=!F.kept[${i}];render()">${F.kept[i] ? '去掉' : '留下'}</button></figcaption></figure>`).join('')}</div>
+    <div class="step-foot"><button class="btn" onclick="genScene('${pc.id}',true)">重新生成 · 4 张</button>
+      <button class="btn primary" onclick="go('flow',{pieceId:'${pc.id}',step:'model'})">保留 ${keptN} 张，下一步选模特</button></div>
+  </div>`;
+}
+function StepModel(pc) {
+  const mood = F.card.mood;
+  const rec = S.models.filter(m => m.source === 'preset' && m.temper.includes(mood)).slice(0, 3);
+  const others = S.models.filter(m => !rec.includes(m) && (m.source !== 'self' || true));
+  const tile = m => `<button class="model-tile" aria-pressed="${F.modelId === m.id}" onclick="F.modelId='${m.id}';render()">${modelPortrait(m)}<span><b>${esc(m.name)}</b> <span class="small muted">${esc(m.source === 'self' ? '本人模特 · 仅你可见' : m.source === 'chat' ? '对话生成' : m.desc)}</span></span></button>`;
+  return `<div class="step">
+    <h2 class="step-title">选一位模特</h2>
+    <p class="muted">按设定卡「${esc(F.card.temper)}」推荐。也可以浏览全部、用一句话生成，或者用你自己的照片。</p>
+    <h3 class="section-title" style="margin-top:20px">推荐</h3><div class="model-grid">${rec.map(tile).join('')}</div>
+    <h3 class="section-title" style="margin-top:24px">其他模特 <span class="muted small num">${others.length}</span></h3><div class="model-grid">${others.map(tile).join('')}</div>
+    <div class="model-make">
+      <label class="field"><span>描述一位新模特</span><span class="joined"><input class="input" id="model-desc" placeholder="比如：短发、颈线修长、穿浅灰针织"><button class="btn" onclick="chatModel()">生成 · 1 张</button></span></label>
+      <button class="btn" onclick="selfModelDialog()">用我自己的照片</button>
+    </div>
+    <div class="step-foot"><span class="small muted">${F.modelId ? '已选 ' + esc(byId(S.models, F.modelId).name) : '还没选模特'}</span>
+      <button class="btn primary" ${F.modelId ? '' : 'disabled'} onclick="go('flow',{pieceId:'${pc.id}',step:'build'})">下一步</button></div>
+  </div>`;
+}
+function chatModel() {
+  const d = ($('#model-desc').value || '').trim();
+  if (!d) return toast('先写一句描述');
+  if (!spend(1, '生成模特')) return toast('额度不够');
+  const base = PRESET_MODELS[(S.seq) % PRESET_MODELS.length];
+  const m = { ...base, id: uid('m'), name: '新模特 ' + (S.models.filter(x => x.source === 'chat').length + 1), desc: d, source: 'chat', temper: [F.card ? F.card.mood : '清冷'] };
+  S.models.push(m); F.modelId = m.id; toast('已生成并存进总资产'); render();
+}
+function StepBuild(pc) {
+  const sc = F.scene, m = byId(S.models, F.modelId);
+  if (!F.name) F.name = sc.material.replace('海边', '') + (sc.light === 'warm' ? '暖光' : sc.light === 'cool' ? '晨光' : '柔光');
+  return `<div class="step">
+    <h2 class="step-title">组建工作室</h2>
+    <p class="muted">场景和模特都会存进总资产。以后调性相近的作品，可以直接进这间拍。</p>
+    <div class="build-preview">
+      <div class="scene-strip">${ANGLES.map((a, i) => F.kept[i] ? sceneSvg(sc, i) : '').join('')}</div>
+      <div class="build-model">${modelPortrait(m)}<span><b>${esc(m.name)}</b><span class="small muted">${esc(F.card.outfit)} · ${esc(F.card.pose)}</span></span></div>
+    </div>
+    <label class="field" style="max-width:320px;margin-top:20px"><span>工作室名字</span><input class="input" value="${esc(F.name)}" oninput="F.name=this.value"></label>
+    <div class="step-foot"><button class="btn" onclick="go('flow',{pieceId:'${pc.id}',step:'model'})">换模特</button>
+      <button class="btn primary" onclick="saveStudio('${pc.id}')">保存工作室，开始拍</button></div>
+  </div>`;
+}
+function saveStudio(pieceId, opts = {}) {
+  const sc = { ...F.scene, id: uid('s'), name: (F.name || F.scene.material) + ' 场景', kept: F.kept.slice(), versions: [{ v: 1, at: new Date() }] };
+  S.scenes.push(sc);
+  const st = { id: uid('w'), name: F.name || (F.scene.material.replace('海边', '') + '·' + (F.card ? F.card.mood : '')), sceneId: sc.id, modelId: F.modelId, card: { ...F.card }, createdAt: new Date() };
+  S.studios.push(st);
+  if (!opts.silent) { go('studio', { id: st.id, pieceId }); toast('工作室已保存'); }
+  return st;
+}
+
+// 工作室：这一套能不能直接上架？
+const Z = {}; // 每间工作室的拍摄设置
+const REASONS = ['形状', '颜色', '大小', '细节'];
+function zs(st, pieceId) {
+  const z = Z[st.id] || (Z[st.id] = { pieceId: null, ratio: '1:1', ai: 4, real: true, size: true, realSrc: 'std', comp: null, face: null });
+  if (pieceId) z.pieceId = pieceId;
+  if (!z.pieceId || !byId(S.pieces, z.pieceId)) { const last = S.shots.filter(x => x.studioId === st.id).pop(); z.pieceId = last ? last.pieceId : (S.pieces[S.pieces.length - 1] || {}).id; }
+  const pc = byId(S.pieces, z.pieceId);
+  if (pc && (!z.comp || z.cat !== pc.cat)) { z.comp = DEFAULT_COMP[pc.cat].comp; z.face = DEFAULT_COMP[pc.cat].face; z.cat = pc.cat; }
+  return z;
+}
+function Studio() {
+  const st = byId(S.studios, route.id); if (!st) return Home();
+  const z = zs(st, route.pieceId); route.pieceId = null;
+  const pc = byId(S.pieces, z.pieceId), sc = byId(S.scenes, st.sceneId), m = byId(S.models, st.modelId);
+  const sets = [...new Set(S.shots.filter(x => x.studioId === st.id && x.pieceId === pc.id).map(x => x.setId))].reverse();
+  const cost = z.ai, canShoot = m && cost <= left();
+  const sharing = studiosUsing('scene', sc.id).length;
+  const seg = (k, opts) => `<div class="seg" role="group">${opts.map(o => `<button aria-pressed="${z[k] === o}" onclick="Z['${st.id}'].${k}='${o}';render()">${o}</button>`).join('')}</div>`;
+  return `<div class="page studio-page">
+    <nav class="crumb small"><a href="#" onclick="go('home');return false">${icon('back', 14)}我的工作室</a></nav>
+    <div class="title-row"><h1>${esc(st.name)}</h1>
+      <span class="studio-id"><span class="id-thumb">${sceneSvg(sc, 0)}</span><span>${esc(sc.name)}</span><span class="id-plus">+</span>${m ? `<span class="id-thumb round">${modelPortrait(m)}</span><span>${esc(m.name)}</span>` : '<span class="pill neg">缺模特</span>'}</span>
+      <div class="actions"><button class="btn" onclick="switchPop(event,'scene','${st.id}')">${icon('swap', 14)}切换场景</button>
+        <button class="btn" onclick="switchPop(event,'model','${st.id}')">${icon('swap', 14)}切换模特</button></div></div>
+    <p class="subline small">场景 v${sc.version} ${sharing > 1 ? `· 被 ${sharing} 间工作室共用` : ''} · ${esc(sc.atmo)}、${esc(sc.tone)}</p>
+    <div class="studio-grid">
+      <aside class="shoot-panel">
+        <div class="field"><span>这次拍</span><div class="piece-pick">${S.pieces.filter(p => p.confirmed !== false).map(p => `<button class="piece-chip" aria-pressed="${p.id === pc.id}" onclick="Z['${st.id}'].pieceId='${p.id}';render()">${stdView(p, 'front', '#fff')}<span>${esc(p.name)}</span></button>`).join('')}</div></div>
+        <div class="field"><span>构图 <span class="small muted">默认${DEFAULT_COMP[pc.cat].label}</span></span>${seg('comp', ['局部特写', '半身', '全身'])}</div>
+        <div class="field"><span>露脸</span>${seg('face', ['不露脸', '侧脸', '露脸'])}</div>
+        <div class="field"><span>画幅</span>${seg('ratio', ['1:1', '3:4'])}</div>
+        <div class="field"><span>AI 试戴图</span><div class="stepper"><button class="icon-btn" aria-label="少一张" onclick="Z['${st.id}'].ai=Math.max(1,Z['${st.id}'].ai-1);render()">−</button><b class="num">${z.ai} 张</b><button class="icon-btn" aria-label="多一张" onclick="Z['${st.id}'].ai=Math.min(8,Z['${st.id}'].ai+1);render()">+</button></div></div>
+        <div class="field"><span>附带</span>
+          <label class="check"><input type="checkbox" ${z.real ? 'checked' : ''} onchange="Z['${st.id}'].real=this.checked;render()"><span>实物图 <span class="small muted">不经 AI</span></span></label>
+          ${z.real ? `<div class="seg sub">${[['std', '三视图正面'], ['raw', '原始照片']].map(([k, l]) => `<button aria-pressed="${z.realSrc === k}" onclick="Z['${st.id}'].realSrc='${k}';render()">${l}</button>`).join('')}</div>` : ''}
+          <label class="check"><input type="checkbox" ${z.size ? 'checked' : ''} onchange="Z['${st.id}'].size=this.checked;render()"><span>尺寸标注图</span></label></div>
+        <button class="btn primary lg shoot-btn" ${canShoot ? '' : 'disabled'} onclick="shoot('${st.id}')">拍一套 · 消耗 ${cost} 张</button>
+        <p class="small muted">${!m ? '这间工作室缺模特，先切换一位' : cost > left() ? `额度只剩 ${left()} 张` : `拍完剩 ${left() - cost} 张额度`}</p>
+      </aside>
+      <div class="shoot-bar"><span class="small num">剩 ${left()} 张额度</span><button class="btn primary" ${canShoot ? '' : 'disabled'} onclick="shoot('${st.id}')">拍一套 · ${cost} 张</button></div>
+      <section class="sets">${sets.length ? sets.map((sid, i) => setBlock(st, sid, i === 0)).join('') : `
+        <div class="set-empty"><div class="ghost-sheet">${Array.from({ length: z.ai + (z.real ? 1 : 0) + (z.size ? 1 : 0) }, () => '<i></i>').join('')}</div>
+        <p><b>「${esc(pc.name)}」还没在这间拍过。</b></p><p class="muted">一套 = ${z.ai} 张 AI 试戴图${z.real ? ' + 实物图' : ''}${z.size ? ' + 尺寸标注图' : ''}。每张试戴图下面有珠序对照，你可以逐张核对。</p></div>`}</section>
+    </div></div>`;
+}
+let setCounter = 0;
+function shoot(studioId) {
+  const st = byId(S.studios, studioId), z = zs(st), sc = byId(S.scenes, st.sceneId), m = byId(S.models, st.modelId);
+  const setId = 'set' + (++setCounter), first = setCounter === 1, keptAngles = (sc.kept || [1, 1, 1, 1]).map((k, i) => k ? i : -1).filter(i => i >= 0);
+  let charged = 0;
+  for (let i = 0; i < z.ai; i++) {
+    // 演示：第一套里第 3 张吊坠被画大（等用户发现），第 4 张生成超时（不扣额度）
+    const failed = first && i === 3;
+    if (!failed) charged++;
+    S.shots.push({ id: uid('x'), setId, studioId, pieceId: z.pieceId, sceneId: sc.id, sceneVersion: sc.version, sceneSnap: { ...sc }, modelId: m.id, modelSnap: { ...m }, kind: 'ai', angle: keptAngles[i % keptAngles.length], ratio: z.ratio, comp: z.comp, face: z.face, pendantScale: first && i === 2 ? 1.5 : 1, failed, verdict: null, retakes: 0, history: [], at: new Date() });
+  }
+  if (z.real) S.shots.push({ id: uid('x'), setId, studioId, pieceId: z.pieceId, kind: 'real', src: z.realSrc, at: new Date() });
+  if (z.size) S.shots.push({ id: uid('x'), setId, studioId, pieceId: z.pieceId, kind: 'size', at: new Date() });
+  spend(charged, '拍摄');
+  render(); toast(`拍好了：${charged} 张试戴图${first ? '，1 张超时未扣额度' : ''}`);
+}
+function setBlock(st, sid, latest) {
+  const shots = S.shots.filter(x => x.setId === sid), a = shots[0], pc = byId(S.pieces, a.pieceId);
+  const ai = shots.filter(x => x.kind === 'ai'), likes = ai.filter(x => x.verdict === 'like').length;
+  const m = byId(S.models, a.modelId), sc = byId(S.scenes, a.sceneId);
+  return `<article class="set ${latest ? '' : 'older'}">
+    <header class="set-head"><h2 class="section-title">${latest ? '这一套' : '更早的一套'}</h2>
+      <span class="small muted">${a.at.toLocaleString('zh-CN', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })} · 场景 v${a.sceneVersion || 1} · ${m ? esc(m.name) : esc(a.modelName || '已删除的模特')} · ${esc(pc.name)}</span>
+      <span class="set-like small num">像 <b>${likes}</b> / ${ai.filter(x => !x.failed).length}</span>
+      <button class="btn" onclick="exportDialog('${sid}')">${icon('down', 14)}打包下载</button></header>
+    <div class="contact ${a.ratio === '3:4' ? 'tall' : ''}">${shots.map((x, i) => frame(x, pc, i)).join('')}</div></article>`;
+}
+function frame(x, pc, i) {
+  if (x.kind === 'real') return `<figure class="frame">${x.src === 'raw' ? rawPhoto(pc, 'front') : stdView(pc, 'front', '#fff')}<figcaption><span class="small">实物图 · ${x.src === 'raw' ? '原始照片' : '三视图正面'}</span><button class="link" onclick="toast('已下载 ${esc(pc.name)}-实物图.jpg')">下载</button></figcaption></figure>`;
+  if (x.kind === 'size') return `<figure class="frame">${sizeChart(pc)}<figcaption><span class="small">尺寸标注图</span><button class="link" onclick="toast('已下载 ${esc(pc.name)}-尺寸图.jpg')">下载</button></figcaption></figure>`;
+  if (x.failed) return `<figure class="frame failed"><div class="fail-box"><p><b>这张没拍成</b></p><p class="small muted">生成超时，没有扣额度</p><button class="btn" onclick="retryFail('${x.id}')">重试 · 1 张</button></div><figcaption><span class="small muted">试戴 ${i + 1}</span></figcaption></figure>`;
+  const off = x.pendantScale !== 1;
+  return `<figure class="frame ai ${x.verdict === 'dislike' ? 'bad' : ''}">
+    <div class="shot">${aiShot(x)}<span class="ai-mark">AI 生成</span></div>
+    <div class="bead-compare">${beadCompare(pc, x.pendantScale)}${off ? '<span class="diff-note small">吊坠和实拍大小不一致</span>' : '<span class="small muted">珠序、吊坠与实拍一致</span>'}</div>
+    <figcaption><span class="small muted">试戴 ${i + 1}${x.retakes ? ` · 重拍 ${x.retakes} 次` : ''}</span>
+      <span class="verdict"><button class="vbtn" aria-pressed="${x.verdict === 'like'}" onclick="verdict('${x.id}','like')">像</button><button class="vbtn" aria-pressed="${x.verdict === 'dislike'}" onclick="verdict('${x.id}','dislike')">不像</button></span></figcaption>
+    ${x.verdict === 'dislike' && !x.followup ? `<div class="ask pop-ask" role="dialog" aria-label="哪里不像"><span class="small">哪里不像？</span><div class="opts">${REASONS.map(r => `<button class="opt sm" onclick="retake('${x.id}','${r}')">${r}</button>`).join('')}</div></div>` : ''}
+    ${x.followup ? `<p class="small notice">这件暂时拍不好，已记录给运营人工跟进。</p>` : ''}
+    ${x.history.length ? `<p class="small muted">保留了 ${x.history.length} 张历史</p>` : ''}
+  </figure>`;
+}
+function verdict(id, v) {
+  const x = byId(S.shots, id); x.verdict = x.verdict === v ? null : v;
+  S.feedback = (S.feedback || []).concat({ shotId: id, cat: byId(S.pieces, x.pieceId).cat, v: x.verdict, at: new Date() });
+  render();
+}
+function retake(id, reason) {
+  const x = byId(S.shots, id);
+  if (x.retakes >= RETAKE_LIMIT) { x.followup = true; S.followups.push({ shotId: id, pieceId: x.pieceId, reasons: (x.reasons || []).concat(reason), at: new Date() }); return render(); }
+  if (!spend(1, '单张重拍')) return toast('额度不够重拍');
+  x.history.push({ pendantScale: x.pendantScale, at: x.at, reason });
+  x.reasons = (x.reasons || []).concat(reason);
+  x.pendantScale = 1; x.retakes++; x.verdict = null; x.at = new Date();
+  render(); toast(`按「${reason}」重拍了这张，原图保留为历史`);
+}
+function retryFail(id) { const x = byId(S.shots, id); if (!spend(1, '重试')) return toast('额度不够'); x.failed = false; render(); toast('重试成功'); }
+
+// 切换场景 / 模特；导出与 AI 标识
+function closeLayer() { $('#layer').innerHTML = ''; }
+function switchPop(ev, kind, studioId) {
+  ev.stopPropagation();
+  const st = byId(S.studios, studioId), r = ev.currentTarget.getBoundingClientRect();
+  const list = kind === 'scene' ? S.scenes : S.models;
+  const cur = st[kind + 'Id'];
+  $('#layer').innerHTML = `<div class="pop" role="menu" style="top:${r.bottom + 6}px;left:${Math.min(r.left, innerWidth - 300)}px">
+    <p class="small muted" style="padding:6px 8px">${kind === 'scene' ? '换成总资产里的另一个场景' : '换一位模特'}；已有成片保留</p>
+    ${list.map(x => `<button role="menuitem" ${x.id === cur ? 'aria-current="true"' : ''} onclick="doSwitch('${studioId}','${kind}','${x.id}')">
+      <span class="mini-thumb">${kind === 'scene' ? sceneSvg(x, 0) : modelPortrait(x)}</span><span>${esc(x.name)}${x.id === cur ? ' <span class="small muted">当前</span>' : ''}</span></button>`).join('')}</div>`;
+  setTimeout(() => document.addEventListener('click', closeLayer, { once: true }));
+}
+function doSwitch(studioId, kind, id) {
+  const st = byId(S.studios, studioId); st[kind + 'Id'] = id; closeLayer(); render();
+  toast(`已切换${kind === 'scene' ? '场景' : '模特'}，旧成片原样保留`);
+}
+function exportDialog(setId) {
+  const shots = S.shots.filter(x => x.setId === setId && !x.failed), pc = byId(S.pieces, shots[0].pieceId);
+  const ai = shots.filter(x => x.kind === 'ai').length;
+  $('#layer').innerHTML = `<dialog id="dlg"><div class="dlg-body">
+    <h2 class="section-title">打包下载「${esc(pc.name)}」这一套</h2>
+    <p class="num">${shots.length} 张 JPG：${ai} 张 AI 试戴图带「AI 生成」角标，实物图和尺寸图不带。所有 AI 图都写入隐式标识。</p>
+    <p class="small muted">1:1 不低于 1500 × 1500 px，3:4 不低于 1500 × 2000 px</p>
+    <details class="nobadge"><summary>需要不带角标的版本？</summary>
+      <p class="small" style="margin-top:8px">按《人工智能生成合成内容标识办法》，AI 生成图需要标识。去掉显式角标后，隐式标识仍保留，发布时由你负责标识并承担使用责任。【条款文案待定】</p>
+      <label class="check" style="margin-top:8px"><input type="checkbox" id="agree" onchange="$('#nobadge').disabled=!this.checked"><span class="small">我已阅读并同意，自行承担标识义务与使用责任</span></label>
+      <button class="btn" id="nobadge" disabled style="margin-top:8px" onclick="exportNoBadge('${setId}')">下载无角标版本</button></details>
+  </div><div class="dlg-foot"><button class="btn" onclick="closeLayer()">取消</button><button class="btn primary" onclick="closeLayer();toast('已下载 ${esc(pc.name)}-套图.zip（${shots.length} 张）')">下载 ${shots.length} 张</button></div></dialog>`;
+  $('#dlg').showModal();
+  $('#dlg').addEventListener('close', closeLayer);
+}
+function exportNoBadge(setId) {
+  S.exportLogs.push({ user: S.user.shop, setId, at: new Date(), agreed: true });
+  closeLayer(); toast('已下载无角标版本，同意记录已留存');
+}
+
+// 总资产：我有哪些素材、被谁在用？
+const TABS = [['scene', '场景'], ['model', '我的模特'], ['piece', '饰品'], ['ref', '店铺参考'], ['shot', '成片']];
+function Assets() {
+  const tab = route.tab || 'scene';
+  const lists = { scene: S.scenes, model: S.models.filter(m => m.source !== 'preset'), piece: S.pieces, ref: S.refs, shot: S.shots.filter(x => !x.failed) };
+  const rows = lists[tab];
+  const empty = {
+    scene: '还没有场景。新建工作室时生成的场景会存在这里。', model: '还没有自己的模特。可以用一句话生成，或用你自己的照片。',
+    piece: '还没有作品。', ref: '还没有店铺参考图。聊气质时上传的参考图会存在这里。', shot: '还没有成片。',
+  }[tab];
+  const head = `<div class="title-row"><h1>总资产</h1><div class="actions">
+    ${tab === 'model' ? `<button class="btn" onclick="selfModelDialog()">用我自己的照片</button>` : ''}
+    ${tab === 'ref' ? `<button class="btn" onclick="addRef()">${icon('plus', 14)}上传参考图</button>` : ''}
+    ${tab === 'piece' ? `<button class="btn primary" onclick="go('flow',{step:'upload'})">${icon('plus')}上新一件作品</button>` : ''}</div></div>
+    <div class="tabs" role="tablist">${TABS.map(([k, l]) => `<button role="tab" aria-selected="${tab === k}" onclick="go('assets',{tab:'${k}'})">${l} <span class="num muted">${lists[k].length}</span></button>`).join('')}</div>`;
+  if (!rows.length) return `<div class="page">${head}<p class="empty-line">${empty}</p>${tab === 'model' ? presetNote() : ''}</div>`;
+  if (tab === 'shot') return `<div class="page">${head}<div class="shot-wall">${rows.map(x => { const pc = byId(S.pieces, x.pieceId); return `<figure class="frame">${x.kind === 'ai' ? `<div class="shot">${aiShot(x)}<span class="ai-mark">AI 生成</span></div>` : x.kind === 'real' ? stdView(pc, 'front', '#fff') : sizeChart(pc)}<figcaption class="small"><span>${esc(pc.name)} · ${esc(byId(S.studios, x.studioId).name)}</span></figcaption></figure>`; }).join('')}</div></div>`;
+  return `<div class="page">${head}<table class="asset-table"><thead><tr><th>名称</th><th>${tab === 'scene' ? '材质 · 色调' : tab === 'model' ? '来源' : tab === 'piece' ? '品类 · 主尺寸' : '用途'}</th><th>使用情况</th><th></th></tr></thead><tbody>
+    ${rows.map(x => assetRow(tab, x)).join('')}</tbody></table>${tab === 'model' ? presetNote() : ''}${usageMap()}</div>`;
+}
+function presetNote() { return `<p class="small muted" style="margin-top:16px">平台预置的 ${PRESET_MODELS.length} 位模特不在这里管理，组建工作室时可直接挑选。</p>`; }
+function assetRow(tab, x) {
+  let thumb = '', meta = '', usage = '';
+  if (tab === 'scene') { thumb = sceneSvg(x, 0); meta = `${esc(x.material)} · ${esc(x.tone)}`; const n = studiosUsing('scene', x.id).length; usage = n ? `被 ${n} 间工作室使用` : '未使用'; }
+  if (tab === 'model') { thumb = modelPortrait(x); meta = x.source === 'self' ? '本人模特 · 仅你可见' : '对话生成'; const n = studiosUsing('model', x.id).length; usage = n ? `被 ${n} 间工作室使用` : '未使用'; }
+  if (tab === 'piece') { thumb = stdView(x, 'front', '#fff'); meta = `${CAT[x.cat]} · <span class="mono">${x.sizes[0]} cm</span>`; const n = S.shots.filter(s => s.pieceId === x.id && s.kind === 'ai').length; usage = n ? `${n} 张试戴图` : '还没拍'; }
+  if (tab === 'ref') { thumb = svg(240, 240, '<rect width="240" height="240" fill="#eeece7"/><rect x="30" y="40" width="180" height="24" fill="#d8d4ca"/><rect x="30" y="80" width="80" height="110" fill="#cfd8dc"/><rect x="130" y="80" width="80" height="110" fill="#e2dccf"/>', 'pic'); meta = '只用于理解气质，不参与饰品识别'; usage = '—'; }
+  return `<tr><td><span class="row-id"><span class="mini-thumb lg">${thumb}</span><b>${esc(x.name)}</b></span></td><td class="muted">${meta}</td><td>${usage}</td>
+    <td class="row-act"><button class="btn ghost danger" onclick="delAsset('${tab}','${x.id}')">删除</button></td></tr>`;
+}
+function delAsset(tab, id) {
+  const listKey = { scene: 'scenes', model: 'models', piece: 'pieces', ref: 'refs' }[tab];
+  const x = byId(S[listKey], id);
+  const using = (tab === 'scene' || tab === 'model') ? studiosUsing(tab, id) : [];
+  if (using.length && !(tab === 'model' && x.source === 'self')) {
+    return confirmBox(`「${esc(x.name)}」被 ${using.length} 间工作室使用，暂时不能删除`, `先在这些工作室里换掉它：${using.map(s => esc(s.name)).join('、')}。已有成片不受影响。`, null);
+  }
+  const selfNote = tab === 'model' && x.source === 'self' ? `原始照片和这位模特会一并删除，之后无法恢复。${using.length ? `正在使用它的 ${using.length} 间工作室会显示「缺模特」，补选之前不能拍。` : ''}` : '已有成片不受影响，拍摄记录保留。';
+  confirmBox(`删除「${esc(x.name)}」？`, selfNote, () => {
+    S.shots.filter(s => s.modelId === id).forEach(s => { s.modelName = x.name; });
+    S[listKey] = S[listKey].filter(y => y.id !== id);
+    if (tab === 'model') using.forEach(s => { s.modelId = null; });
+    render(); toast('已删除');
+  });
+}
+function confirmBox(title, body, onOk) {
+  window._ok = onOk;
+  $('#layer').innerHTML = `<dialog id="dlg"><div class="dlg-body"><h2 class="section-title">${title}</h2><p>${body}</p></div>
+    <div class="dlg-foot">${onOk ? `<button class="btn" onclick="closeLayer()">取消</button><button class="btn danger" onclick="closeLayer();_ok()">删除</button>` : `<button class="btn primary" onclick="closeLayer()">知道了</button>`}</div></dialog>`;
+  $('#dlg').showModal(); $('#dlg').addEventListener('close', closeLayer);
+}
+function selfModelDialog() {
+  $('#layer').innerHTML = `<dialog id="dlg"><div class="dlg-body">
+    <h2 class="section-title">用你自己的照片生成模特</h2>
+    <p>上传一张你本人的正脸照片，生成只属于你的模特。人脸属于敏感个人信息，需要你单独同意。</p>
+    <label class="check"><input type="checkbox" id="c1" onchange="selfOk()"><span>照片是我本人</span></label>
+    <label class="check"><input type="checkbox" id="c2" onchange="selfOk()"><span>我单独同意平台使用这张人脸照片生成模特；模特只在我的账号内可用，我可以随时删除，删除后照片与模特一并删除。<span class="muted">【条款文案待定】</span></span></label>
+  </div><div class="dlg-foot"><button class="btn" onclick="closeLayer()">取消</button><button class="btn primary" id="selfgo" disabled onclick="makeSelfModel()">上传照片并生成 · 1 张</button></div></dialog>`;
+  $('#dlg').showModal(); $('#dlg').addEventListener('close', closeLayer);
+}
+function selfOk() { $('#selfgo').disabled = !($('#c1').checked && $('#c2').checked); }
+function makeSelfModel() {
+  if (!spend(1, '本人模特')) return toast('额度不够');
+  S.consentLogs.push({ user: S.user.shop, kind: '人脸信息', at: new Date() });
+  const m = { id: uid('m'), name: '我（本人）', skin: '#e9c6a9', hair: '#3b2c22', outfit: '#d9dfe2', temper: ['清冷', '温柔', '明亮', '复古'], desc: '本人', source: 'self' };
+  S.models.push(m); if (route.name === 'flow') F.modelId = m.id;
+  closeLayer(); render(); toast('本人模特已生成，仅你可见');
+}
+
+// 谁在用什么：解释为什么有的素材删不掉
+function usageMap() {
+  if (!S.studios.length) return '';
+  return `<section class="usage"><h2 class="section-title">工作室在用的素材</h2>
+    <p class="small muted">场景和模特被工作室使用时不能删除；改动共享场景会影响所有用到它的工作室。</p>
+    <table class="asset-table"><thead><tr><th>工作室</th><th>场景</th><th>模特</th><th>拍过的作品</th><th class="num">成片</th></tr></thead><tbody>
+    ${S.studios.map(st => { const sc = byId(S.scenes, st.sceneId), m = byId(S.models, st.modelId), sh = S.shots.filter(x => x.studioId === st.id && !x.failed);
+      const ps = [...new Set(sh.map(x => x.pieceId))].map(id => byId(S.pieces, id).name);
+      return `<tr><td><a href="#" onclick="go('studio',{id:'${st.id}'});return false">${esc(st.name)}</a></td><td><span class="row-id"><span class="mini-thumb">${sceneSvg(sc, 0)}</span>${esc(sc.name)} <span class="small muted">v${sc.version}</span></span></td>
+        <td>${m ? `<span class="row-id"><span class="mini-thumb">${modelPortrait(m)}</span>${esc(m.name)}</span>` : '<span class="pill neg">缺模特</span>'}</td><td>${ps.map(esc).join('、') || '—'}</td><td class="num">${sh.length}</td></tr>`; }).join('')}
+    </tbody></table></section>`;
+}
+
+// 外层 Agent（P1）：一句话调用工作流。原型里用关键词路由演示，正式版由模型做意图分类。
+const Agent = {
+  open: false, msgs: [{ who: 'a', html: '我可以帮你一句话新建或复用工作室，也可以针对某一张做调整。设定卡和保存工作室这两步，我会停下来请你确认。' }],
+  toggle() { this.open = !this.open; this.mount(); if (this.open) setTimeout(() => $('#agent-in') && $('#agent-in').focus()); },
+  say(html, who = 'a') { this.msgs.push({ who, html }); this.mount(); },
+  mount() {
+    let el = $('#agent'); if (!el) { el = document.createElement('aside'); el.id = 'agent'; el.setAttribute('aria-label', '助手'); document.body.appendChild(el); }
+    el.className = this.open ? 'agent open' : 'agent'; document.body.classList.toggle('agent-on', this.open);
+    if (!this.open) { el.innerHTML = ''; return; }
+    const tips = ['帮这条项链建一间清冷风的工作室', '用上次那间工作室拍最新的作品', '第 3 张吊坠改小一点', '换成海边再拍一套', '这个场景的光暖一点'];
+    el.innerHTML = `<header class="agent-head"><b>助手</b><span class="pill">P1</span><button class="icon-btn" aria-label="关闭助手" onclick="Agent.toggle()">${icon('close')}</button></header>
+      <div class="agent-log" id="agent-log">${this.msgs.map(m => `<div class="msg ${m.who}">${m.html}</div>`).join('')}</div>
+      <div class="agent-tips">${tips.map(t => `<button class="opt sm" onclick="Agent.run('${t}')">${t}</button>`).join('')}</div>
+      <form class="agent-form" onsubmit="event.preventDefault();Agent.run($('#agent-in').value)"><input class="input" id="agent-in" placeholder="说一句你想做什么" autocomplete="off"><button class="btn primary">发送</button></form>
+      <details class="adv small"><summary>高级：查看本次提示词</summary><p class="muted">${esc(this.prompt || '还没有调用工作流。')}</p></details>`;
+    const log = $('#agent-log'); log.scrollTop = log.scrollHeight;
+  },
+  run(text) {
+    text = (text || '').trim(); if (!text) return;
+    this.say(esc(text), 'u'); if ($('#agent-in')) $('#agent-in').value = '';
+    const latest = [...S.pieces].reverse().find(p => p.confirmed);
+    if (/建/.test(text) && /工作室/.test(text)) return this.create(text, latest);
+    if (/用.*(那间|工作室).*拍|复用/.test(text)) return this.reuse(text, latest);
+    const n = text.match(/第\s*(\d)\s*张/);
+    if (n) return this.fix(+n[1], text);
+    if (/换成海边|海边再拍/.test(text)) return this.newScene('海边礁石');
+    if (/场景|光/.test(text) && /暖|冷|亮/.test(text)) return this.tweakScene(text);
+    this.say('这句我还没读懂。我能做：新建或复用工作室、针对某一张重拍、换场景再拍、调整当前场景。');
+  },
+  need(latest) { if (latest) return true; this.say(`先把作品的三张实拍放进来，我才能开始。<button class="btn sm-btn" onclick="go('flow',{step:'upload'})">去上传</button>`); return false; },
+  create(text, pc) {
+    if (!this.need(pc)) return;
+    const mood = ['清冷', '温柔', '明亮', '复古'].find(m => text.includes(m)) || '清冷';
+    const mat = /海边/.test(text) ? '海边礁石' : /木/.test(text) ? '旧木桌' : /石膏/.test(text) ? '石膏墙' : '亚麻布';
+    F.answers = { mood, wear: '日常', light: '清晨窗光', material: mat }; F.other = {}; makeCard();
+    this.prompt = `作品「${pc.name}」${CAT[pc.cat]}；气质=${mood}；材质=${mat}；保真：饰品像素与珠序不可改。`;
+    const c = F.card;
+    this.say(`给「${esc(pc.name)}」整理了设定卡，确认后我再生成场景：
+      <div class="mini-card"><p><b>背景</b> ${esc(c.atmo)} · ${esc(c.tone)} · ${esc(c.material)} · ${esc(c.light)}</p><p><b>模特</b> ${esc(c.temper)} · ${esc(c.outfit)} · ${esc(c.pose)}</p></div>
+      <div class="msg-act"><button class="btn primary" onclick="Agent.afterCard('${pc.id}')">就这样</button><button class="btn" onclick="go('flow',{pieceId:'${pc.id}',step:'card'});Agent.toggle()">在页面里改</button></div>`);
+  },
+  afterCard(pieceId) {
+    if (!spend(4, 'Agent 生成场景')) return this.say('额度不够生成 4 张场景图。');
+    const c = F.card;
+    F.scene = { material: c.material, palette: SCENE_PALETTES[c.material], light: LIGHT_SHIFT[c.light], tone: c.tone, atmo: c.atmo, variant: 0, version: 1 };
+    F.kept = [true, true, true, true];
+    const rec = S.models.find(m => m.source === 'preset' && m.temper.includes(c.mood)); F.modelId = rec.id;
+    F.name = c.material.replace('海边', '') + '·' + c.mood;
+    this.say(`场景和模特准备好了。要保存为工作室吗？保存后场景和模特会写进总资产。
+      <div class="mini-scenes">${ANGLES.map((a, i) => `<button class="mini-scene" aria-pressed="${F.kept[i]}" title="${a}" onclick="F.kept[${i}]=!F.kept[${i}];this.setAttribute('aria-pressed',F.kept[${i}])">${sceneSvg(F.scene, i)}</button>`).join('')}</div>
+      <p class="small muted">点图可以去掉不要的机位 · 模特：${esc(rec.name)}（${esc(rec.desc)}）</p>
+      <div class="msg-act"><button class="btn primary" onclick="Agent.save('${pieceId}')">保存工作室并拍一套</button><button class="btn" onclick="go('flow',{pieceId:'${pieceId}',step:'model'});Agent.toggle()">换模特</button></div>`);
+  },
+  save(pieceId) {
+    if (!F.kept.some(Boolean)) F.kept[0] = true;
+    const st = saveStudio(pieceId, { silent: true }); zs(st, pieceId);
+    go('studio', { id: st.id, pieceId }); shoot(st.id);
+    this.say(`已保存「${esc(st.name)}」并拍了一套。每张下面有珠序对照，看看哪张不像。`);
+  },
+  reuse(text, pc) {
+    if (!this.need(pc)) return;
+    if (!S.studios.length) return this.say('还没有工作室可以复用。要我按气质新建一间吗？');
+    const st = S.studios.find(s => text.includes(s.name)) || S.studios[S.studios.length - 1];
+    if (!byId(S.models, st.modelId)) return this.say(`「${esc(st.name)}」缺模特，先在工作室里补选一位。`);
+    zs(st, pc.id); go('studio', { id: st.id, pieceId: pc.id }); shoot(st.id);
+    this.say(`用「${esc(st.name)}」给「${esc(pc.name)}」拍了一套。`);
+  },
+  fix(n, text) {
+    const st = route.name === 'studio' && byId(S.studios, route.id);
+    if (!st) return this.say('先进入一间工作室，我才知道是哪一张。');
+    const last = S.shots.filter(x => x.studioId === st.id && x.kind === 'ai').map(x => x.setId).pop();
+    const x = S.shots.filter(s => s.setId === last && s.kind === 'ai')[n - 1];
+    if (!x || x.failed) return this.say(`这一套没有可调整的第 ${n} 张。`);
+    this.prompt = `定点重拍：第 ${n} 张；要求：${text}；保真：吊坠尺寸与实拍一致。`;
+    retake(x.id, /小|大/.test(text) ? '大小' : '细节');
+    this.say(`第 ${n} 张已按「${esc(text)}」重拍，原图保留为历史。吊坠尺寸仍按实拍，不会改小到和实物不符。`);
+  },
+  newScene(mat) {
+    const st = route.name === 'studio' && byId(S.studios, route.id);
+    if (!st) return this.say('先进入一间工作室，我再帮你换场景。');
+    if (!spend(4, 'Agent 新场景')) return this.say('额度不够生成 4 张场景图。');
+    const base = byId(S.scenes, st.sceneId);
+    const sc = { id: uid('s'), name: '海边礁石 场景', material: mat, palette: SCENE_PALETTES[mat], light: base.light, tone: SCENE_PALETTES[mat].tone, atmo: '开阔透气', variant: 0, version: 1, kept: [1, 1, 1, 1], versions: [{ v: 1, at: new Date() }] };
+    this._pending = sc;
+    this.say(`生成了一个海边场景：<div class="mini-scenes">${[0, 1, 2, 3].map(i => `<span class="mini-scene">${sceneSvg(sc, i)}</span>`).join('')}</div>要不要存进总资产，并把「${esc(st.name)}」换成它再拍一套？
+      <div class="msg-act"><button class="btn primary" onclick="Agent.useScene('${st.id}')">存进并再拍</button><button class="btn" onclick="Agent.say('好的，不存。')">不用了</button></div>`);
+  },
+  useScene(studioId) {
+    const sc = this._pending; if (!sc) return; S.scenes.push(sc); this._pending = null;
+    byId(S.studios, studioId).sceneId = sc.id; render(); shoot(studioId);
+    this.say('已存进总资产、切换场景并拍了一套。之前的成片还在下面。');
+  },
+  tweakScene(text) {
+    const st = route.name === 'studio' && byId(S.studios, route.id);
+    if (!st) return this.say('先进入一间工作室。');
+    const sc = byId(S.scenes, st.sceneId), n = studiosUsing('scene', sc.id).length;
+    const light = /暖/.test(text) ? 'warm' : /冷/.test(text) ? 'cool' : 'soft';
+    this.say(`把「${esc(sc.name)}」的光调成${light === 'warm' ? '暖光' : light === 'cool' ? '冷光' : '柔光'}，要存进这个场景吗？${n > 1 ? `<b>将影响 ${n} 间工作室。</b>` : ''}已有成片不变。
+      <div class="msg-act"><button class="btn primary" onclick="Agent.applyTweak('${sc.id}','${light}')">存进场景</button><button class="btn" onclick="Agent.say('好的，不改。')">不改</button></div>`);
+  },
+  applyTweak(id, light) {
+    const sc = byId(S.scenes, id); sc.light = light; sc.version++; sc.versions.push({ v: sc.version, at: new Date() });
+    render(); this.say(`场景已更新到 v${sc.version}，用到它的工作室都会用新版本。`);
+  },
+};
+
+// 示例账号：一位用过一阵的卖家。全部为演示数据，写进用户资产，额度从记录行计算。
+function seedDemo() {
+  resetUser(true);
+  S.user = { shop: '示例店铺', isNew: false };
+  const day = (d, h = 10) => new Date(2026, 9, d, h, 12);
+  const piece = (i, extra = {}) => { const p = { ...SAMPLE_PIECES[i], id: uid('p'), confirmed: true, createdAt: day(20 + i), ...extra }; S.pieces.push(p); return p; };
+  const wu = piece(0), yue = piece(1), mei = piece(2), chao = piece(3);
+  const scene = (name, material, light, atmo, version = 1) => {
+    const sc = { id: uid('s'), name, material, palette: SCENE_PALETTES[material], light, tone: SCENE_PALETTES[material].tone, atmo, variant: 0, version, kept: [1, 1, 1, 1], versions: Array.from({ length: version }, (_, i) => ({ v: i + 1, at: day(21 + i) })) };
+    S.scenes.push(sc); spend(4, '生成场景'); return sc;
+  };
+  const linen = scene('亚麻窗边 场景', '亚麻布', 'cool', '利落安静');
+  const wood = scene('旧木书桌 场景', '旧木桌', 'warm', '松弛自然', 2);
+  const sea = scene('海边清晨 场景', '海边礁石', 'soft', '开阔透气');
+  const chat = { ...PRESET_MODELS[3], id: uid('m'), name: '新模特 1', desc: '卷发、浅笑、米白针织', source: 'chat', temper: ['温柔'] };
+  S.models.push(chat); spend(1, '生成模特');
+  const studio = (name, sc, modelId, mood) => { const st = { id: uid('w'), name, sceneId: sc.id, modelId, card: { mood }, createdAt: day(22) }; S.studios.push(st); return st; };
+  const w1 = studio('亚麻窗边', linen, 'm1', '清冷');
+  const w2 = studio('亚麻窗边·小满', linen, 'm2', '温柔'); // 与上一间共用场景
+  const w3 = studio('旧木书桌', wood, 'm3', '复古');
+  studio('海边清晨', sea, chat.id, '明亮');
+  // 一套成片：4 张试戴 + 实物 + 尺寸；verdicts 为每张的「像 / 不像」
+  let n = 0;
+  const set = (st, pc, at, sceneVersion, verdicts, extra = {}) => {
+    const setId = 'demo' + (++n), sc = byId(S.scenes, st.sceneId), m = byId(S.models, st.modelId);
+    const snap = { ...sc, version: sceneVersion, light: sceneVersion < sc.version ? 'cool' : sc.light };
+    verdicts.forEach((v, i) => S.shots.push({ id: uid('x'), setId, studioId: st.id, pieceId: pc.id, sceneId: sc.id, sceneVersion, sceneSnap: snap, modelId: m.id, modelSnap: { ...m }, kind: 'ai', angle: i % 4, ratio: '1:1', comp: '局部特写', face: DEFAULT_COMP[pc.cat].face, pendantScale: 1, failed: false, verdict: v, retakes: 0, history: [], at, ...(extra[i] || {}) }));
+    S.shots.push({ id: uid('x'), setId, studioId: st.id, pieceId: pc.id, kind: 'real', src: 'std', at });
+    S.shots.push({ id: uid('x'), setId, studioId: st.id, pieceId: pc.id, kind: 'size', at });
+    spend(verdicts.length, '拍摄');
+  };
+  set(w1, wu, day(22, 15), 1, ['like', 'like', 'like', 'like']);
+  // 月白复用亚麻窗边；第 2 张曾被标不像、按「大小」重拍过一次，原图留作历史
+  set(w1, yue, day(24, 11), 1, ['like', 'like', null, 'like'], { 1: { retakes: 1, reasons: ['大小'], history: [{ pendantScale: 1.4, at: day(24, 11), reason: '大小' }] } });
+  spend(1, '单张重拍');
+  set(w2, wu, day(25, 9), 1, ['like', null, 'like', null]);
+  // 青梅在旧木书桌拍过两套：场景 v1 时一套，调成暖光（v2）后又拍一套
+  set(w3, mei, day(23, 16), 1, ['like', null, 'like', 'like']);
+  set(w3, mei, day(26, 14), 2, ['like', 'like', 'like', null]);
+  S.refs.push({ id: uid('r'), name: '店铺首页截图 1' });
+  S.feedback = S.shots.filter(x => x.verdict).map(x => ({ shotId: x.id, cat: byId(S.pieces, x.pieceId).cat, v: x.verdict, at: x.at }));
+  S.matchLog = [{ pieceId: wu.id, path: '新建' }, { pieceId: yue.id, path: '复用', reason: '调性相近' }, { pieceId: mei.id, path: '新建', reason: '风格不同' }];
+  console.assert(used() + left() === QUOTA_TOTAL, 'demo quota rows add up');
+  return chao;
+}
+// 清空为新用户；quiet 时不重绘
+function resetUser(quiet) {
+  Object.assign(S, { user: { shop: '示例店铺', isNew: true }, pieces: [], scenes: [], models: PRESET_MODELS.map(m => ({ ...m, source: 'preset' })), studios: [], shots: [], refs: [], usage: [], followups: [], exportLogs: [], consentLogs: [], feedback: [], matchLog: [] });
+  Object.keys(Z).forEach(k => delete Z[k]); F.draft = null; setCounter = 0;
+  if (!quiet) { go('home'); toast('已切换到新用户'); }
+}
+function loadDemo() { seedDemo(); go('home'); toast('已载入示例账号'); }
+seedDemo();
+
+</script></body></html>
